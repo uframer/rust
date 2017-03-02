@@ -1,21 +1,14 @@
 # 样板宏
 
-`macro_rules` allows users to define syntax extension in a declarative way.  We
-call such extensions "macros by example" or simply "macros".
+`macro_rules`允许用户用声明式的语法定义语法扩展。我们把这种语法扩展形式叫做*样板宏**（macros by example）*，或者简称为*宏*。
 
-Currently, macros can expand to expressions, statements, items, or patterns.
+目前为止，宏可以展开为表达式、语句、项目（item）或者模式。
 
-(A `sep_token` is any token other than `*` and `+`. A `non_special_token` is
-any token other than a delimiter or `$`.)
+> `sep_token`是一个除了`*`或`+`之外的记号；`non_special_token`是一个除了分隔符或`$`之外的记号。
 
-The macro expander looks up macro invocations by name, and tries each macro
-rule in turn. It transcribes the first successful match. Matching and
-transcription are closely related to each other, and we will describe them
-together.
+宏展开器会根据名字选择宏调用，然后依次尝试匹配这个宏定义的每一条规则，并根据匹配上的第一条规则转写宏内容。匹配和转写紧密相关，我们会一起介绍。
 
-The macro expander matches and transcribes every token that does not begin with
-a `$` literally, including delimiters. For parsing reasons, delimiters must be
-balanced, but they are otherwise not special.
+宏展开器匹配并转写所有不以`$`开头的记号，包括分隔符。由于解析器的原因，分隔符必须要配对，但是除了这一要求，它们就没有什么特别的了。
 
 In the matcher, `$` _name_ `:` _designator_ matches the nonterminal in the Rust
 syntax named by _designator_. Valid designators are:
@@ -70,10 +63,9 @@ lockstep, so the former input transcribes to `(a,d), (b,e), (c,f)`.
 
 Nested repetitions are allowed.
 
-### Parsing limitations
+### 解析器的限制
 
-The parser used by the macro system is reasonably powerful, but the parsing of
-Rust syntax is restricted in two ways:
+宏系统的解析器已经比较强大了，但是Rust的语法解析依然受到两种限制：
 
 1. Macro definitions are required to include suitable separators after parsing
    expressions and other bits of the Rust grammar. This implies that
