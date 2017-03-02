@@ -1,6 +1,6 @@
-# Universal Function Call Syntax
+# 全局函数调用语法
 
-Sometimes, functions can have the same names. Consider this code:
+有时候，函数可能会重名。请考虑如下的代码：
 
 ```rust
 trait Foo {
@@ -24,7 +24,7 @@ impl Bar for Baz {
 let b = Baz;
 ```
 
-If we were to try to call `b.f()`, we’d get an error:
+如果我们想要调用`b.f()`，会遇到一个编译错误：
 
 ```text
 error: multiple applicable methods in scope [E0034]
@@ -41,8 +41,7 @@ note: candidate #2 is defined in an impl of the trait `main::Bar` for the type
 
 ```
 
-We need a way to disambiguate which method we need. This feature is called
-‘universal function call syntax’, and it looks like this:
+我们需要一种方式来指明需要调用哪一个`f`方法。这种方式被称作*全局函数调用语法*，它的用法是：
 
 ```rust
 # trait Foo {
@@ -63,7 +62,7 @@ Foo::f(&b);
 Bar::f(&b);
 ```
 
-Let’s break it down.
+让我们仔细看看其中的关键之处：
 
 ```rust,ignore
 Foo::
@@ -84,16 +83,15 @@ not, and so we need to pass an explicit `&b`.
 
 [methodsyntax]: method-syntax.html
 
-# Angle-bracket Form
+# 尖括号形式
 
-The form of UFCS we just talked about:
+前面我们讲到的全局函数调用语法：
 
 ```rust,ignore
 Trait::method(args);
 ```
 
-Is a short-hand. There’s an expanded form of this that’s needed in some
-situations:
+其实是一种简写形式。有些情况下你需要用到它的完整格式：
 
 ```rust,ignore
 <Type as Trait>::method(args);

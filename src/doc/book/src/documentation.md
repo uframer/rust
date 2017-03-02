@@ -1,10 +1,10 @@
-# Documentation
+# 文档
 
 Documentation is an important part of any software project, and it's
 first-class in Rust. Let's talk about the tooling Rust gives you to
 document your project.
 
-## About `rustdoc`
+## 关于`rustdoc`
 
 The Rust distribution includes a tool, `rustdoc`, that generates documentation.
 `rustdoc` is also used by Cargo through `cargo doc`.
@@ -12,7 +12,7 @@ The Rust distribution includes a tool, `rustdoc`, that generates documentation.
 Documentation can be generated in two ways: from source code, and from
 standalone Markdown files.
 
-## Documenting source code
+## 源代码的文档化
 
 The primary way of documenting a Rust project is through annotating the source
 code. You can use documentation comments for this purpose:

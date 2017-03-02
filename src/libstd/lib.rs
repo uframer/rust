@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! # The Rust Standard Library
+//! # Rust标准库
 //!
 //! The Rust Standard Library is the foundation of portable Rust software, a
 //! set of minimal and battle-tested shared abstractions for the [broader Rust
@@ -23,7 +23,7 @@
 //! `std`, as in [`use std::env`], or in expressions through the absolute path
 //! `::std`, as in [`::std::env::args()`].
 //!
-//! # How to read this documentation
+//! # 如何阅读本文档
 //!
 //! If you already know the name of what you are looking for, the fastest way to
 //! find it is to use the <a href="#" onclick="focusSearchBar();">search
@@ -52,7 +52,7 @@
 //! encouraged to read it. The standard library source is generally high
 //! quality and a peek behind the curtains is often enlightening.
 //!
-//! # What is in the standard library documentation?
+//! # 标准库文档里都有什么内容？
 //!
 //! First of all, The Rust Standard Library is divided into a number of focused
 //! modules, [all listed further down this page](#modules). These modules are
@@ -94,12 +94,11 @@
 //! compiler - but they are documented here the same). Like the prelude, the
 //! standard macros are imported by default into all crates.
 //!
-//! # A Tour of The Rust Standard Library
+//! # Rust标准库巡礼
 //!
-//! The rest of this crate documentation is dedicated to pointing out notable
-//! features of The Rust Standard Library.
+//! 这份crate文档的余下部分会介绍Rust标准库中的重要特性。
 //!
-//! ## Containers and collections
+//! ## 容器和集合
 //!
 //! The [`option`] and [`result`] modules define optional and error-handling
 //! types, [`Option<T>`] and [`Result<T, E>`]. The [`iter`] module defines
@@ -121,7 +120,7 @@
 //! * `&mut [T]` - *mutable slice*
 //! * [`Box<[T]>`][owned slice] - *owned slice*
 //!
-//! [`str`], a UTF-8 string slice, is a primitive type, and the standard library
+//! [`str`]是采用UTF-8编码的string slice，它是基本类型，and the standard library
 //! defines many methods for it. Rust [`str`]s are typically accessed as
 //! immutable references: `&str`. Use the owned [`String`] for building and
 //! mutating strings.
@@ -138,14 +137,13 @@
 //! The [`collections`] module defines maps, sets, linked lists and other
 //! typical collection types, including the common [`HashMap<K, V>`].
 //!
-//! ## Platform abstractions and I/O
+//! ## 平台相关抽象和I/O
 //!
-//! Besides basic data types, the standard library is largely concerned with
-//! abstracting over differences in common platforms, most notably Windows and
-//! Unix derivatives.
+//! 除了基本的数据类型，标准库主要关注如何为常见的平台（Windows和类Unix）提取出合理的
+//! 抽象。
 //!
-//! Common types of I/O, including [files], [TCP], [UDP], are defined in the
-//! [`io`], [`fs`], and [`net`] modules.
+//! 常见的I/O类型，包括[files]、[TCP]、[UDP]，分别定义在[`io`]、[`fs`]和[`net`]模块
+//! 中。
 //!
 //! The [`thread`] module contains Rust's threading abstractions. [`sync`]
 //! contains further primitive shared memory types, including [`atomic`] and

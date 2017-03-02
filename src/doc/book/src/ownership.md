@@ -1,49 +1,27 @@
-# Ownership
+# 所有权
 
-This is the first of three sections presenting Rust’s ownership system. This is one of
-Rust’s most distinct and compelling features, with which Rust developers should
-become quite acquainted. Ownership is how Rust achieves its largest goal,
-memory safety. There are a few distinct concepts, each with its own
-chapter:
+本文是介绍Rust所有权系统的三篇文章中的第一篇。所有权系统是Rust是最有特点和令人印象深刻的特性，每一个Rust开发者都应该熟悉这一系统。Rust依赖所有权系统来实现它最主要的目标——内存安全。所有权系统由几个概念构成，每个概念都会独立介绍：
 
-* ownership, which you’re reading now
-* [borrowing][borrowing], and their associated feature ‘references’
-* [lifetimes][lifetimes], an advanced concept of borrowing
+* 所有权，也就是本文
+* [借用][borrowing]，以及相关的*引用*概念
+* [生命周期][lifetimes]，借用的高级用法
 
-These three chapters are related, and in order. You’ll need all three to fully
-understand the ownership system.
+这三个部分相互关联，你需要按顺序阅读完才能理解所有权系统。
 
 [borrowing]: references-and-borrowing.html
 [lifetimes]: lifetimes.html
 
-# Meta
+# 导语
 
-Before we get to the details, two important notes about the ownership system.
+在开始了解细节之前，我们需要知道两件重要的事情。
 
-Rust has a focus on safety and speed. It accomplishes these goals through many
-‘zero-cost abstractions’, which means that in Rust, abstractions cost as little
-as possible in order to make them work. The ownership system is a prime example
-of a zero-cost abstraction. All of the analysis we’ll talk about in this guide
-is _done at compile time_. You do not pay any run-time cost for any of these
-features.
+1. Rust主要关注安全性和速度，它通过坚持“零代价抽象”这一理念来实现这些目标。所有权系统就是“零代价抽象”理念的重要体现。本文中我们谈及的所有抽象都*存留于编译时*，你不需要在运行时为这些抽象付出任何代价。
 
-However, this system does have a certain cost: learning curve. Many new users
-to Rust experience something we like to call ‘fighting with the borrow
-checker’, where the Rust compiler refuses to compile a program that the author
-thinks is valid. This often happens because the programmer’s mental model of
-how ownership should work doesn’t match the actual rules that Rust implements.
-You probably will experience similar things at first. There is good news,
-however: more experienced Rust developers report that once they work with the
-rules of the ownership system for a period of time, they fight the borrow
-checker less and less.
+2. 所有权系统有另一种很高昂的代价：陡峭的学习曲线。对此我们的建议是，多联系，越用越熟。
 
-With that in mind, let’s learn about ownership.
+# 所有权
 
-# Ownership
-
-[Variable bindings][bindings] have a property in Rust: they ‘have ownership’
-of what they’re bound to. This means that when a binding goes out of scope,
-Rust will free the bound resources. For example:
+Rust中的[变量绑定][bindings]有一个特点：变量*拥有*被绑定对象的所有权。这意味着一旦脱离这个绑定的作用域，Rust就会释放这个对象。例如：
 
 ```rust
 fn foo() {
@@ -51,19 +29,11 @@ fn foo() {
 }
 ```
 
-When `v` comes into scope, a new [vector][vectors] is created on [the stack][stack],
-and it allocates space on [the heap][heap] for its elements. When `v` goes out
-of scope at the end of `foo()`, Rust will clean up everything related to the
-vector, even the heap-allocated memory. This happens deterministically, at the
-end of the scope.
+当变量`v`进入作用域，会在[栈][stack]上创建一个新的[向量][vectors]，然后这个向量会在[堆][heap]上为它的元素分配内存。当`v`脱离`foo`的作用域时，Rust会释放同这个向量相关的所有资源，包括栈上和堆上的内存，而且，这个清理动作会确定地发生在`v`脱离作用域的那个点。
 
-We covered [vectors] in the previous chapter; we use them
-here as an example of a type that allocates space on the heap at runtime. They
-behave like [arrays], except their size may change by `push()`ing more
-elements onto them.
+我们在之前的章节中介绍过[向量][vectors]，在这里用它做一个例子，因为它会动态地从堆分配内存。向量的行为类似于[数组][arrays]，差别在于他们可以通过不断地`push()`项目改变大小。
 
-Vectors have a [generic type][generics] `Vec<T>`, so in this example `v` will have type
-`Vec<i32>`. We'll cover [generics] in detail in a later chapter.
+向量的类型是一个[泛型][generics] `Vec<T>`，因此在这个例子中，`v`的类型是`Vec<i32>`。我们会在后面的章节中介绍[泛型][generics]。
 
 [arrays]: primitive-types.html#arrays
 [vectors]: vectors.html
@@ -72,11 +42,9 @@ Vectors have a [generic type][generics] `Vec<T>`, so in this example `v` will ha
 [bindings]: variable-bindings.html
 [generics]: generics.html
 
-# Move semantics
+# Move语义
 
-There’s some more subtlety here, though: Rust ensures that there is _exactly
-one_ binding to any given resource. For example, if we have a vector, we can
-assign it to another binding:
+这里有一个需要注意的地方，Rust会确保*同一*时刻*一个*资源只有*一个*绑定。请看下面的例子：
 
 ```rust
 let v = vec![1, 2, 3];
@@ -84,7 +52,7 @@ let v = vec![1, 2, 3];
 let v2 = v;
 ```
 
-But, if we try to use `v` afterwards, we get an error:
+如果我们随后想要再使用`v`，就会遇到错误：
 
 ```rust,ignore
 let v = vec![1, 2, 3];
@@ -94,7 +62,7 @@ let v2 = v;
 println!("v[0] is: {}", v[0]);
 ```
 
-It looks like this:
+错误信息类似于：
 
 ```text
 error: use of moved value: `v`
@@ -102,43 +70,37 @@ println!("v[0] is: {}", v[0]);
                         ^
 ```
 
-A similar thing happens if we define a function which takes ownership, and
-try to use something after we’ve passed it as an argument:
+如果我们不用新的变量，而是定义一个会夺取所有权的函数，会怎么样呢？看看下面的例子：
 
 ```rust,ignore
 fn take(v: Vec<i32>) {
-    // What happens here isn’t important.
+    // 这里写什么无所谓
 }
 
 let v = vec![1, 2, 3];
 
+// 下面的函数会将所有权移走，但是不会在函数返回后自动移回来
 take(v);
 
+// 因为前面的函数调用移走了所有权并且没有归还，所以这里访问v会出错
 println!("v[0] is: {}", v[0]);
 ```
 
-Same error: ‘use of moved value’. When we transfer ownership to something else,
-we say that we’ve ‘moved’ the thing we refer to. You don’t need some sort of
-special annotation here, it’s the default thing that Rust does.
+如果你试图编译上面的代码，会得到一样的错误`use of moved value`。如果我们将一个资源的所有权从一个地方转移到另一个地方（变量或者函数），那么我们称之为所有权被*移动*（move）了。在赋值或者调用函数时，Rust的默认动作就是move。
 
-## The details
+## 细节
 
-The reason that we cannot use a binding after we’ve moved it is subtle, but
-important.
-
-When we write code like this:
+我们为什么不能在所有权被移走之后再使用那个绑定呢？下面看一个例子：
 
 ```rust
 let x = 10;
 ```
 
-Rust allocates memory for an integer [i32] on the [stack][sh], copies the bit
-pattern representing the value of 10 to the allocated memory and binds the
-variable name x to this memory region for future reference.
+在上面的代码中，Rust会在[栈][sh]上分配一个整数[i32]的内存，然后把`10`保存到这块内存中，并将变量名`x`绑定到这块内存的地址以供将来使用。
 
 [i32]: primitive-types.html#numeric-types
 
-Now consider the following code fragment:
+请考虑下面的代码片段：
 
 ```rust
 let v = vec![1, 2, 3];
@@ -146,28 +108,13 @@ let v = vec![1, 2, 3];
 let mut v2 = v;
 ```
 
-The first line allocates memory for the vector object `v` on the stack like
-it does for `x` above. But in addition to that it also allocates some memory
-on the [heap][sh] for the actual data (`[1, 2, 3]`). Rust copies the address
-of this heap allocation to an internal pointer, which is part of the vector
-object placed on the stack (let's call it the data pointer).
+第一行在栈上为向量对象`v`分配内存，此外，还会在[堆][sh]上为向量里的数据（`[1, 2, 3]`）分配内存。向量对象会在内部保存指向堆上分配的内存的指针。在下面的讨论中，我们称之为*数据指针*。
 
-It is worth pointing out (even at the risk of stating the obvious) that the
-vector object and its data live in separate memory regions instead of being a
-single contiguous memory allocation (due to reasons we will not go into at
-this point of time). These two parts of the vector (the one on the stack and
-one on the heap) must agree with each other at all times with regards to
-things like the length, capacity, etc.
+虽然你可能已经知道，但是这里还是要强调一下，一个向量现在由两部分组成，分别是堆上的实际数据和栈上的元数据。显然，这两部分的状态需要一致才行，例如栈上元数据记录着的元素个数要和堆上实际的元素个数一样。
 
-When we move `v` to `v2`, Rust actually does a bitwise copy of the vector
-object `v` into the stack allocation represented by `v2`. This shallow copy
-does not create a copy of the heap allocation containing the actual data.
-Which means that there would be two pointers to the contents of the vector
-both pointing to the same memory allocation on the heap. It would violate
-Rust’s safety guarantees by introducing a data race if one could access both
-`v` and `v2` at the same time.
+再看第二句，我们将`v`移动到`v2`，此时Rust会做一次浅拷贝，将`v`在栈上的内容原样拷贝到`v2`在栈上的存储区中，结果是会有两个向量对象都指向同一份堆上的数据。
 
-For example if we truncated the vector to just two elements through `v2`:
+显然，如果操作不慎，就可能造成问题。例如，我们通过`v2`将向量截断为只有两个元素：
 
 ```rust
 # let v = vec![1, 2, 3];
@@ -175,30 +122,17 @@ For example if we truncated the vector to just two elements through `v2`:
 v2.truncate(2);
 ```
 
-and `v` were still accessible we'd end up with an invalid vector since `v`
-would not know that the heap data has been truncated. Now, the part of the
-vector `v` on the stack does not agree with the corresponding part on the
-heap. `v` still thinks there are three elements in the vector and will
-happily let us access the non existent element `v[2]` but as you might
-already know this is a recipe for disaster. Especially because it might lead
-to a segmentation fault or worse allow an unauthorized user to read from
-memory to which they don't have access.
+假设此时我们仍然可以通过`v`访问数据（这在Rust中其实是不允许的，不过我们为了分析可能遇到的问题，先假设Rust没有进行约束），那么通过`v`做访问的代码就不知道这个向量的数据已经被截断了，因为`v`代表的栈上的元数据记录的元素个数并没有更新过，这同堆上实际的元素个数*不一致*。如果通过`v`引用第三个元素，就会造成访问错误。
 
-This is why Rust forbids using `v` after we’ve done the move.
+所以，Rust在我们从`v`移动到`v2`后，就不再允许我们访问`v`了。（🐷：绕了好大一圈）
 
 [sh]: the-stack-and-the-heap.html
 
-It’s also important to note that optimizations may remove the actual copy of
-the bytes on the stack, depending on circumstances. So it may not be as
-inefficient as it initially seems.
+另外一件值得注意的事情是，如果可能的话，编译器可能会优化掉在栈上的浅拷贝动作，所以这段代码可能并没有看起来那么低效。
 
-## `Copy` types
+## Copy语义
 
-We’ve established that when ownership is transferred to another binding, you
-cannot use the original binding. However, there’s a [trait][traits] that changes this
-behavior, and it’s called `Copy`. We haven’t discussed traits yet, but for now,
-you can think of them as an annotation to a particular type that adds extra
-behavior. For example:
+在上一节中，我们建立了Move语义的观念：一旦你将所有原从一个绑定移走，就不能再通过原来的绑定来访问它。不过，Rust提供了一个名为`Copy`的[特征][traits]来修改这个默认行为。我们还没有讲到*特征*，不过你可以将它理解为针对类型的标记，Rust编译器会根据这些标记来改变行为。我们来看一个例子：
 
 ```rust
 let v = 1;
@@ -208,15 +142,12 @@ let v2 = v;
 println!("v is: {}", v);
 ```
 
-In this case, `v` is an `i32`, which implements the `Copy` trait. This means
-that, just like a move, when we assign `v` to `v2`, a copy of the data is made.
-But, unlike a move, we can still use `v` afterward. This is because an `i32`
-has no pointers to data somewhere else, copying it is a full copy.
+在这个例子中，`v`的类型是`i32`，`i32`实现了`Copy`这个特征。这意味着：
 
-All primitive types implement the `Copy` trait and their ownership is
-therefore not moved like one would assume, following the ‘ownership rules’.
-To give an example, the two following snippets of code only compile because the
-`i32` and `bool` types implement the `Copy` trait.
+1. 第二句赋值时，`v`的内容被拷贝到了`v2`在栈上的内存中，这点同move一样；
+2. 同move不同的是，我们在赋值后*依然*可以使用`v`。这是因为`i32`并没有通过指针引用别处的数据，这里的拷贝是一次完全拷贝。
+
+Rust中所有的基础类型都实现了`Copy`特征，因此它们的所有权不会像按照普通的Rust所有权规则做move。请看下面的例子，正是因为`i32`和`bool`都实现了`Copy`，才能正常编译。
 
 ```rust
 fn main() {
@@ -244,8 +175,7 @@ fn change_truth(x: bool) -> bool {
 }
 ```
 
-If we had used types that do not implement the `Copy` trait,
-we would have gotten a compile error because we tried to use a moved value.
+如果我们使用了没有实现`Copy`的类型，那么就会看到编译错误，这是因为我们用到了一个已经被移走的值。
 
 ```text
 error: use of moved value: `a`
@@ -253,14 +183,13 @@ println!("{}", a);
                ^
 ```
 
-We will discuss how to make your own types `Copy` in the [traits][traits]
-section.
+我们会在[特征][traits]这一章介绍如何开发自己的`Copy`实现。
 
 [traits]: traits.html
 
-# More than ownership
+# 延伸讨论
 
-Of course, if we had to hand ownership back with every function we wrote:
+在引入Borrow语义之前，让我们看下面这个函数的例子：
 
 ```rust
 fn foo(v: Vec<i32>) -> Vec<i32> {
@@ -271,7 +200,7 @@ fn foo(v: Vec<i32>) -> Vec<i32> {
 }
 ```
 
-This would get very tedious. It gets worse the more things we want to take ownership of:
+由于传递函数参数时默认会使用move语义转移所有权，所以我们通常需要在函数结束时将所有权归还回去，否则在调用者那里你就不能在继续使用`v`这个绑定了。显然，这动作非常的无聊，而且你move的参数越多，写起来就越麻烦：
 
 ```rust
 fn foo(v1: Vec<i32>, v2: Vec<i32>) -> (Vec<i32>, Vec<i32>, i32) {
@@ -287,9 +216,6 @@ let v2 = vec![1, 2, 3];
 let (v1, v2, answer) = foo(v1, v2);
 ```
 
-Ugh! The return type, return line, and calling the function gets way more
-complicated.
+上面例子里的两个vector类型的返回值纯粹是为了将所有权交回去。太麻烦了！
 
-Luckily, Rust offers a feature which helps us solve this problem.
-It’s called borrowing and is the topic of the next section!
-
+这时候就轮到我们的Borrow语义登场了，我们下一章见！

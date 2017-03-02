@@ -1,10 +1,8 @@
-# Traits
+# 特征
 
-A trait is a language feature that tells the Rust compiler about
-functionality a type must provide.
+特征（trait）这个语言特性告诉Rust编译器一个类型需要提供什么功能。
 
-Recall the `impl` keyword, used to call a function with [method
-syntax][methodsyntax]:
+回忆一下`impl`关键字，我们用[方法的语法][methodsyntax]调用过函数：
 
 ```rust
 struct Circle {
@@ -22,8 +20,7 @@ impl Circle {
 
 [methodsyntax]: method-syntax.html
 
-Traits are similar, except that we first define a trait with a method
-signature, then implement the trait for a type. In this example, we implement the trait `HasArea` for `Circle`:
+特征与此类似，差别在于我们首先用一个方法签名定义了一个特征，然后为一个类型实现了这个特征。在这个例子中，我们为`Circle`实现了特征`HasArea`：
 
 ```rust
 struct Circle {
@@ -43,9 +40,7 @@ impl HasArea for Circle {
 }
 ```
 
-As you can see, the `trait` block looks very similar to the `impl` block,
-but we don’t define a body, only a type signature. When we `impl` a trait,
-we use `impl Trait for Item`, rather than only `impl Item`.
+如你所见，`trait`代码块看起来同`impl`代码块非常相似，但是我们并没有定义一个函数体，只给出了一个类型签名。在我们用`impl`实现一个trait时，所用的形式是`impl Trait for Item`，而不是`impl Item`。
 
 `Self` may be used in a type annotation to refer to an instance of the type
 implementing this trait passed as a parameter. `Self`, `&Self` or `&mut Self`

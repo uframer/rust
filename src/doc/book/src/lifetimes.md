@@ -1,44 +1,28 @@
-# Lifetimes
+# 生命周期
 
 This is the last of three sections presenting Rust’s ownership system. This is one of
 Rust’s most distinct and compelling features, with which Rust developers should
 become quite acquainted. Ownership is how Rust achieves its largest goal,
 memory safety. There are a few distinct concepts, each with its own chapter:
 
-* [ownership][ownership], the key concept
-* [borrowing][borrowing], and their associated feature ‘references’
-* lifetimes, which you’re reading now
+* [所有权][ownership]，核心概念
+* [借用][borrowing]，以及相关的*引用*概念
+* 生命周期，也就是本文
 
-These three chapters are related, and in order. You’ll need all three to fully
-understand the ownership system.
+这三个部分相互关联，你需要按顺序阅读完才能理解所有权系统。
 
-[ownership]: ownership.html
-[borrowing]: references-and-borrowing.html
+[所有权]: ownership.html
+[借用]: references-and-borrowing.html
 
-# Meta
+# 导语
 
-Before we get to the details, two important notes about the ownership system.
+在开始了解细节之前，我们需要知道两件重要的事情。
 
-Rust has a focus on safety and speed. It accomplishes these goals through many
-‘zero-cost abstractions’, which means that in Rust, abstractions cost as little
-as possible in order to make them work. The ownership system is a prime example
-of a zero-cost abstraction. All of the analysis we’ll talk about in this guide
-is _done at compile time_. You do not pay any run-time cost for any of these
-features.
+1. Rust主要关注安全性和速度，它通过坚持“零代价抽象”这一理念来实现这些目标。所有权系统就是“零代价抽象”理念的重要体现。本文中我们谈及的所有抽象都**存留于编译时**，你不需要在运行时为这些抽象付出任何代价。
 
-However, this system does have a certain cost: learning curve. Many new users
-to Rust experience something we like to call ‘fighting with the borrow
-checker’, where the Rust compiler refuses to compile a program that the author
-thinks is valid. This often happens because the programmer’s mental model of
-how ownership should work doesn’t match the actual rules that Rust implements.
-You probably will experience similar things at first. There is good news,
-however: more experienced Rust developers report that once they work with the
-rules of the ownership system for a period of time, they fight the borrow
-checker less and less.
+2. 所有权系统有另一种很高昂的代价：陡峭的学习曲线。对此我们的建议是，多联系，越用越熟。
 
-With that in mind, let’s learn about lifetimes.
-
-# Lifetimes
+# 生命周期
 
 Lending out a reference to a resource that someone else owns can be
 complicated. For example, imagine this set of operations:
@@ -132,7 +116,7 @@ cases, but needs the programmer's support in complex scenarios.
 
 [traits]: traits.html
 
-# Syntax
+# 语法
 
 The `'a` reads ‘the lifetime a’. Technically, every reference has some lifetime
 associated with it, but the compiler lets you elide (i.e. omit, see

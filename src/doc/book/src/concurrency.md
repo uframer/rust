@@ -1,10 +1,8 @@
-# Concurrency
+# 并发
 
-Concurrency and parallelism are incredibly important topics in computer
-science, and are also a hot topic in industry today. Computers are gaining more
-and more cores, yet many programmers aren't prepared to fully utilize them.
+并发（concurrency）和并行（parallelism）是计算机科学中极为重要的主题，现在在工业界也是热门话题。计算机的核原来越多，与此对比，很多程序员却没有准备好充分利用多核的威力。
 
-Rust's memory safety features also apply to its concurrency story. Even
+Rust的内存安全特性 also apply to its concurrency story. Even
 concurrent Rust programs must be memory safe, having no data races. Rust's type
 system is up to the task, and gives you powerful ways to reason about
 concurrent code at compile time.
@@ -17,7 +15,7 @@ implement an alternative way of doing things.
 [mio](https://github.com/carllerche/mio) is a real-world example of this
 principle in action.
 
-## Background: `Send` and `Sync`
+## 背景知识：`Send`和`Sync`
 
 Concurrency is difficult to reason about. In Rust, we have a strong, static
 type system to help us reason about our code. As such, Rust gives us two traits
@@ -63,7 +61,7 @@ about the properties of your code under concurrency. Before we demonstrate
 why, we need to learn how to create a concurrent Rust program in the first
 place!
 
-## Threads
+## 线程
 
 Rust's standard library provides a library for threads, which allow you to
 run Rust code in parallel. Here's a basic example of using `std::thread`:
@@ -146,7 +144,7 @@ mutable state. Rust helps out with its type system here as well, by preventing
 data races at compile time. Let's talk about how you actually share things
 between threads.
 
-## Safe Shared Mutable State
+## 安全共享可变状态
 
 Due to Rust's type system, we have a concept that sounds like a lie: "safe
 shared mutable state." Many programmers agree that shared mutable state is

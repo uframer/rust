@@ -1,118 +1,113 @@
 .TH RUSTC "1" "September 2016" "rustc 1.13.0" "User Commands"
 .SH NAME
-rustc \- The Rust compiler
+rustc \- Rust编译器
 .SH SYNOPSIS
 .B rustc
 [\fIOPTIONS\fR] \fIINPUT\fR
 
 .SH DESCRIPTION
-This program is a compiler for the Rust language, available at https://www.rust\-lang.org.
+Rust语言的编译器，网站是https://www.rust\-lang.org。
 
 .SH OPTIONS
 
 .TP
 \fB\-h\fR, \fB\-\-help\fR
-Display the help message.
+显示帮助消息。
 .TP
 \fB\-\-cfg\fR \fISPEC\fR
-Configure the compilation environment.
+配置编译环境。
 .TP
 \fB\-L\fR [\fIKIND\fR=]\fIPATH\fR
-Add a directory to the library search path.
-The optional \fIKIND\fR can be one of:
+将一个目录添加到库的搜索路径中。
+其中，可选的\fIKIND\fR取值可以是：
 .RS
 .TP
 \fBdependency\fR
-only lookup transitive dependencies here
+只查找传递依赖关系
 .TP
 .B crate
-only lookup local `extern crate` directives here
+只查找本地的`extern crate`指令给出的crate
 .TP
 .B native
-only lookup native libraries here
+只查找原生库
 .TP
 .B framework
-only look for OSX frameworks here
+只查找OSX framework
 .TP
 .B all
-look for anything here (the default)
+查找所有内容（这是默认值）
 .RE
 .TP
 \fB\-l\fR [\fIKIND\fR=]\fINAME\fR
-Link the generated crate(s) to the specified library \fINAME\fR.
-The optional \fIKIND\fR can be one of \fIstatic\fR, \fIdylib\fR, or
-\fIframework\fR.
-If omitted, \fIdylib\fR is assumed.
+将生成的crate(s)链接到指定的库\fINAME\fR。
+\fIKIND\fR的可选值包括\fIstatic\fR、\fIdylib\fR或者\fIframework\fR。
+如果忽略这个选项，那么默认会使用\fIdylib\fR。
 .TP
 \fB\-\-crate\-type\fR [bin|lib|rlib|dylib|cdylib|staticlib]
-Comma separated list of types of crates for the compiler to emit.
+由逗号分隔的类型列表，控制编译器输出哪些类型的crate。
 .TP
 \fB\-\-crate\-name\fR \fINAME\fR
-Specify the name of the crate being built.
+指定正在构建的crate的名字。
 .TP
 \fB\-\-emit\fR [asm|llvm\-bc|llvm\-ir|obj|link|dep\-info][=\fIPATH\fR]
-Configure the output that \fBrustc\fR will produce. Each emission may also have
-an optional explicit output \fIPATH\fR specified for that particular emission
-kind. This path takes precedence over the \fB-o\fR option.
+配置\fBrustc\fR输出什么内容。每种输出选项还可以带有一个可选的\fIPATH\fR来指定这种输出内容的输出路径。这里指定的路径优先于\fB-o\fR选项指定的路径。
 .TP
 \fB\-\-print\fR [crate\-name|file\-names|sysroot]
-Comma separated list of compiler information to print on stdout.
+由逗号分隔的列表，指定要在标准输出上打印哪些编译器信息。
 .TP
 \fB\-g\fR
-Equivalent to \fI\-C\ debuginfo=2\fR.
+等价于\fI\-C\ debuginfo=2\fR。
 .TP
 \fB\-O\fR
-Equivalent to \fI\-C\ opt\-level=2\fR.
+等价于\fI\-C\ opt\-level=2\fR。
 .TP
 \fB\-o\fR \fIFILENAME\fR
-Write output to \fIFILENAME\fR. Ignored if multiple \fI\-\-emit\fR outputs are specified which
-don't have an explicit path otherwise.
+将输出写入\fIFILENAME\fR文件。如果\fI\-\-emit\fR指定了输出路径，就使用果\fI\-\-emit\fR指定的路径；否则，就使用这里指定的路径。
 .TP
 \fB\-\-out\-dir\fR \fIDIR\fR
 Write output to compiler\[hy]chosen filename in \fIDIR\fR. Ignored if \fI\-o\fR is specified.
 Defaults to the current directory.
 .TP
 \fB\-\-explain\fR \fIOPT\fR
-Provide a detailed explanation of an error message.
+提供错误信息的详细解释。
 .TP
 \fB\-\-test\fR
 Build a test harness.
 .TP
 \fB\-\-target\fR \fITARGET\fR
-Target triple for which the code is compiled. This option defaults to the host’s target
-triple. The target triple has the general format <arch><sub>\-<vendor>\-<sys>\-<abi>, where:
+设置目标三元组。这个选项的默认值是宿主系统的目标三元组。目标三元素的通用格式是<arch><sub>\-<vendor>\-<sys>\-<abi>，其中：
 .RS
 .TP
 .B <arch>
-x86, arm, thumb, mips, etc.
+x86、arm、thumb、mips等。
 .TP
 .B <sub>
-for example on ARM: v5, v6m, v7a, v7m, etc.
+例如在ARM上，可以为：v5、v6m、v7a、v7m等。
 .TP
 .B <vendor>
-pc, apple, nvidia, ibm, etc.
+pc、apple、nvidia、ibm等。
 .TP
 .B <sys>
-none, linux, win32, darwin, cuda, etc.
+none、linux、win32、darwin、cuda等。
 .TP
 .B <abi>
-eabi, gnu, android, macho, elf, etc.
+eabi、gnu、android、macho、elf等。
 .RE
 .TP
 \fB\-W help\fR
-Print 'lint' options and default settings.
+打印'lint'选项和默认设置。
 .TP
 \fB\-W\fR \fIOPT\fR, \fB\-\-warn\fR \fIOPT\fR
-Set lint warnings.
+设置lint警告选项。
 .TP
 \fB\-A\fR \fIOPT\fR, \fB\-\-allow\fR \fIOPT\fR
-Set lint allowed.
+设置lint允许选项。
 .TP
 \fB\-D\fR \fIOPT\fR, \fB\-\-deny\fR \fIOPT\fR
-Set lint denied.
+设置lint拒绝选项。
 .TP
 \fB\-F\fR \fIOPT\fR, \fB\-\-forbid\fR \fIOPT\fR
-Set lint forbidden.
+设置lint禁止选项。
 .TP
 \fB\-C\fR \fIFLAG\fR[=\fIVAL\fR], \fB\-\-codegen\fR \fIFLAG\fR[=\fIVAL\fR]
 Set a codegen\[hy]related flag to the value specified.
@@ -120,10 +115,10 @@ Use \fI\-C help\fR to print available flags.
 See CODEGEN OPTIONS below.
 .TP
 \fB\-V\fR, \fB\-\-version\fR
-Print version info and exit.
+打印版本信息并退出。
 .TP
 \fB\-v\fR, \fB\-\-verbose\fR
-Use verbose output.
+使用verbose输出模式。
 .TP
 \fB\-\-extern\fR \fINAME\fR=\fIPATH\fR
 Specify where an external rust library is located. These should match
@@ -133,43 +128,40 @@ Specify where an external rust library is located. These should match
 Override the system root.
 .TP
 \fB\-Z\fR \fIFLAG\fR
-Set internal debugging options.
-Use \fI\-Z help\fR to print available options.
+设置内部调试选项。使用\fI\-Z help\fR可以列出可用的选项。
 .TP
 \fB\-\-color\fR auto|always|never
-Configure coloring of output:
+配置输出的色彩选项：
 .RS
 .TP
 .B auto
-colorize, if output goes to a tty (default);
+如果输出到一个tty，那么使用色彩（默认值）；
 .TP
 .B always
-always colorize output;
+总是使用色彩；
 .TP
 .B never
-never colorize output.
+永远不使用色彩。
 .RE
 
 .SH CODEGEN OPTIONS
 
 .TP
 \fBar\fR=\fI/path/to/ar\fR
-Path to the archive utility to use when assembling archives.
+指定归档工具的路径。
 .TP
 \fBlinker\fR=\fI/path/to/cc\fR
-Path to the linker utility to use when linking libraries, executables, and
-objects.
+指定链接器的路径。
 .TP
 \fBlink\-args\fR='\fI\-flag1 \-flag2\fR'
 A space\[hy]separated list of extra arguments to pass to the linker when the linker
 is invoked.
 .TP
 \fBlto\fR
-Perform LLVM link\[hy]time optimizations.
+执行LLVM链接时优化。
 .TP
 \fBtarget\-cpu\fR=\fIhelp\fR
-Selects a target processor.
-If the value is 'help', then a list of available CPUs is printed.
+选择目标处理器。如果这个值是'help'，那么会列出可用的CPU。
 .TP
 \fBtarget\-feature\fR='\fI+feature1\fR,\fI\-feature2\fR'
 A comma\[hy]separated list of features to enable or disable for the target.

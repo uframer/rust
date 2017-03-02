@@ -1,4 +1,4 @@
-# Procedural Macros (and custom Derive)
+# 过程宏（和自定义派生）
 
 As you've seen throughout the rest of the book, Rust provides a mechanism
 called "derive" that lets you implement traits easily. For example,

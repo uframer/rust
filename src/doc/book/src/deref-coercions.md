@@ -1,7 +1,6 @@
-# `Deref` coercions
+# `Deref`解引用转换
 
-The standard library provides a special trait, [`Deref`][deref]. It’s normally
-used to overload `*`, the dereference operator:
+标准库提供了一名为[`Deref`][deref]的特殊的特征，它通常被用于重载解引用运算符`*`：
 
 ```rust
 use std::ops::Deref;
@@ -26,66 +25,56 @@ fn main() {
 
 [deref]: ../std/ops/trait.Deref.html
 
-This is useful for writing custom pointer types. However, there’s a language
-feature related to `Deref`: ‘deref coercions’. Here’s the rule: If you have a
-type `U`, and it implements `Deref<Target=T>`, values of `&U` will
-automatically coerce to a `&T`. Here’s an example:
+这个特征常常用于编写自定义的指针类型。不过，Rust中还有一个同`Deref`相关的语言特征：*解引用转换（deref coercion）*，它的规则如下：假设已有类型`U`，并且它实现了`Deref<Target=T>`，也就是可以从`&U`解引用出`T`，它那么`&U`可以被自动转换为`&T`。看一个例子：
 
 ```rust
 fn foo(s: &str) {
-    // Borrow a string for a second.
+    // 借用一个字符串
 }
 
-// String implements Deref<Target=str>.
+// 这里to_string()返回的是String类型，也就是owned是String类型
 let owned = "Hello".to_string();
 
-// Therefore, this works:
+// 由于String类型实现了Deref<Target=str>，因此，这句是合法的，&owned的类型会被自动转换为&str：
 foo(&owned);
 ```
 
-Using an ampersand in front of a value takes a reference to it. So `owned` is a
-`String`, `&owned` is an `&String`, and since `impl Deref<Target=str> for
-String`, `&String` will deref to `&str`, which `foo()` takes.
-
-That’s it. This rule is one of the only places in which Rust does an automatic
-conversion for you, but it adds a lot of flexibility. For example, the `Rc<T>`
-type implements `Deref<Target=T>`, so this works:
+这条规则是Rust唯一的一条自动类型转换规则。它提供了很大的灵活性。例如，`Rc<T>`实现了`Deref<Target=T>`，所以下面的代码是合法的：
 
 ```rust
 use std::rc::Rc;
 
 fn foo(s: &str) {
-    // Borrow a string for a second.
+    // 借用一个字符串
 }
 
-// String implements Deref<Target=str>.
+// 这里to_string()返回的是String类型，也就是owned是String类型
 let owned = "Hello".to_string();
+// 用Rc<T>封装owned，这里counted类型被推导为Rc<String>
 let counted = Rc::new(owned);
 
-// Therefore, this works:
+// 这里其实用到了两次转换：
+// 1. &Rc<String>可以被转换为&String
+// 2. &String被转换为&str
+// 至此，counted就可以被foo接受了
 foo(&counted);
 ```
 
-All we’ve done is wrap our `String` in an `Rc<T>`. But we can now pass the
-`Rc<String>` around anywhere we’d have a `String`. The signature of `foo`
-didn’t change, but works just as well with either type. This example has two
-conversions: `&Rc<String>` to `&String` and then `&String` to `&str`. Rust will do
-this as many times as possible until the types match.
+在转换时，Rust会尝试尽可能多的可能的转换。
 
-Another very common implementation provided by the standard library is:
+标准库中另一种常见的用法是，也就是向量的引用可以解引用为切片：
 
 ```rust
 fn foo(s: &[i32]) {
-    // Borrow a slice for a second.
+    // 借用一个切片
 }
 
-// Vec<T> implements Deref<Target=[T]>.
+// owned的类型是Vec<T>
 let owned = vec![1, 2, 3];
 
+// Vec<T>实现了Deref<Target=[T]>，所以这里&[i32;3]可以被转换为&[i32]
 foo(&owned);
 ```
-
-Vectors can `Deref` to a slice.
 
 ## Deref and method calls
 

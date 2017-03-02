@@ -1,16 +1,10 @@
-# Trait Objects
+# 特征对象
 
-When code involves polymorphism, there needs to be a mechanism to determine
-which specific version is actually run. This is called ‘dispatch’. There are
-two major forms of dispatch: static dispatch and dynamic dispatch. While Rust
-favors static dispatch, it also supports dynamic dispatch through a mechanism
-called ‘trait objects’.
+如果代码中有多态机制，那么就需要确定具体使用的是哪一路代码，这个过程叫做*分派*。分派有两种：静态分派和动态分派。尽管Rust倾向于使用静态分派，但是它也通过名叫*特征对象*的机制支持动态分派。
 
-## Background
+## 背景
 
-For the rest of this chapter, we’ll need a trait and some implementations.
-Let’s make a simple one, `Foo`. It has one method that is expected to return a
-`String`.
+在本章的后续内容中，我们需要用一个特征和它的实现做例子讲解特征对象机制。我们举一个简单的例子，一个名叫`Foo`的特征，它有一个返回`String`类型的方法。
 
 ```rust
 trait Foo {
@@ -18,7 +12,7 @@ trait Foo {
 }
 ```
 
-We’ll also implement this trait for `u8` and `String`:
+在这个例子中，我们还为`u8`和`String`实现了`Foo`这个特征：
 
 ```rust
 # trait Foo { fn method(&self) -> String; }
@@ -32,9 +26,9 @@ impl Foo for String {
 ```
 
 
-## Static dispatch
+## 静态分派
 
-We can use this trait to perform static dispatch with trait bounds:
+我们可以使用*特征绑定*机制执行静态分派：
 
 ```rust
 # trait Foo { fn method(&self) -> String; }
@@ -53,10 +47,7 @@ fn main() {
 }
 ```
 
-Rust uses ‘monomorphization’ to perform static dispatch here. This means that
-Rust will create a special version of `do_something()` for both `u8` and
-`String`, and then replace the call sites with calls to these specialized
-functions. In other words, Rust generates something like this:
+Rust使用所谓的*单态化**（monomorphization）*来实现静态分派。它的含义是Rust会为`u8`和`String`类型分别创建一个`do_something()`的特化版本，然后把对这个函数的调用依据类型不同替换为对应的特化版本。换句话说，Rust会生成类似如下的代码：
 
 ```rust
 # trait Foo { fn method(&self) -> String; }
@@ -79,28 +70,15 @@ fn main() {
 }
 ```
 
-This has a great upside: static dispatch allows function calls to be
-inlined because the callee is known at compile time, and inlining is
-the key to good optimization. Static dispatch is fast, but it comes at
-a tradeoff: ‘code bloat’, due to many copies of the same function
-existing in the binary, one for each type.
+这种方法有一个很大的优点：由于被调用的是哪个特化版本在编译时是可以确定的，因此静态分派的函数可能被内联处理，而内联是一种常用的优化技巧。静态分派在运行时可能很快，但是也有代价：*代码膨胀*——每种类型对应的特化版本都需要占用一块空间。
 
-Furthermore, compilers aren’t perfect and may “optimize” code to become slower.
-For example, functions inlined too eagerly will bloat the instruction cache
-(cache rules everything around us). This is part of the reason that `#[inline]`
-and `#[inline(always)]` should be used carefully, and one reason why using a
-dynamic dispatch is sometimes more efficient.
+此外，编译器也不是完美无缺的，许多所谓的*优化*甚至可能越*优化*越差。例如，如果函数内联策略过于激进，就会极大地增加代码大小，可能会撑爆指令缓存。这也是为什么我们应该小心使用`#[inline]`和`#[inline(always)]`特性，同理，有时候使用动态分派可能更为高效。
 
-However, the common case is that it is more efficient to use static dispatch,
-and one can always have a thin statically-dispatched wrapper function that does
-a dynamic dispatch, but not vice versa, meaning static calls are more flexible.
-The standard library tries to be statically dispatched where possible for this
-reason.
+不过，多数情况下使用静态分派更为高效，而且你总是可以写一个封装了动态分派实现的静态分派函数，但是反过来就不行了，也就是说，静态分派更为灵活。正是由于这个原因，标准库总是尽可能地使用静态分派。
 
-## Dynamic dispatch
+## 动态分派
 
-Rust provides dynamic dispatch through a feature called ‘trait objects’. Trait
-objects, like `&Foo` or `Box<Foo>`, are normal values that store a value of
+Rust通过名为*特征对象*的方式提供了动态分派机制。如`&Foo`或`Box<Foo>`这样的特征对象， are normal values that store a value of
 *any* type that implements the given trait, where the precise type can only be
 known at runtime.
 
@@ -112,11 +90,9 @@ These trait object coercions and casts also work for pointers like `&mut T` to
 `&mut Foo` and `Box<T>` to `Box<Foo>`, but that’s all at the moment. Coercions
 and casts are identical.
 
-This operation can be seen as ‘erasing’ the compiler’s knowledge about the
-specific type of the pointer, and hence trait objects are sometimes referred to
-as ‘type erasure’.
+由于这个操作可以被看做*抹掉*编译器中某个指针的类型信息，因此特征对象有时候也被叫做*类型擦除*。
 
-Coming back to the example above, we can use the same trait to perform dynamic
+回到前面的例子，we can use the same trait to perform dynamic
 dispatch with trait objects by casting:
 
 ```rust

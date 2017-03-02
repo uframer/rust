@@ -1,6 +1,6 @@
-# Operators and Overloading
+# 运算符和重载
 
-Rust allows for a limited form of operator overloading. There are certain
+Rust允许有限形式的运算符重载。There are certain
 operators that are able to be overloaded. To support a particular operator
 between types, there’s a specific trait that you can implement, which then
 overloads the operator.

@@ -1,7 +1,6 @@
-# Borrow and AsRef
+# `Borrow`和`AsRef`
 
-The [`Borrow`][borrow] and [`AsRef`][asref] traits are very similar, but
-different. Here’s a quick refresher on what these two traits mean.
+[`Borrow`][borrow]和[`AsRef`][asref]这两个特征非常相似，但是它们是不同的。在比较之前，我们先快速回忆一下它们两个的功能。
 
 [borrow]: ../std/borrow/trait.Borrow.html
 [asref]: ../std/convert/trait.AsRef.html

@@ -1,10 +1,10 @@
-# Bibliography
+# 参考书目
 
 This is a reading list of material relevant to Rust. It includes prior
 research that has - at one time or another - influenced the design of
 Rust, as well as publications about Rust.
 
-### Type system
+### 类型系统
 
 * [Region based memory management in Cyclone](http://209.68.42.137/ucsd-pages/Courses/cse227.w03/handouts/cyclone-regions.pdf)
 * [Safe manual memory management in Cyclone](http://www.cs.umd.edu/projects/PL/cyclone/scp.pdf)
@@ -16,7 +16,7 @@ Rust, as well as publications about Rust.
 * [Uniqueness and Reference Immutability for Safe Parallelism](https://research.microsoft.com/pubs/170528/msr-tr-2012-79.pdf)
 * [Region Based Memory Management](http://www.cs.ucla.edu/~palsberg/tba/papers/tofte-talpin-iandc97.pdf)
 
-### Concurrency
+### 并发
 
 * [Singularity: rethinking the software stack](https://research.microsoft.com/pubs/69431/osr2007_rethinkingsoftwarestack.pdf)
 * [Language support for fast and reliable message passing in singularity OS](https://research.microsoft.com/pubs/67482/singsharp.pdf)
@@ -35,13 +35,13 @@ Rust, as well as publications about Rust.
 * [Algorithms for scalable synchronization of shared-memory multiprocessors](https://www.cs.rochester.edu/u/scott/papers/1991_TOCS_synch.pdf)
 * [Epoch-based reclamation](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-579.pdf).
 
-### Others
+### 其他
 
 * [Crash-only software](https://www.usenix.org/legacy/events/hotos03/tech/full_papers/candea/candea.pdf)
 * [Composing High-Performance Memory Allocators](http://people.cs.umass.edu/~emery/pubs/berger-pldi2001.pdf)
 * [Reconsidering Custom Memory Allocation](http://people.cs.umass.edu/~emery/pubs/berger-oopsla2002.pdf)
 
-### Papers *about* Rust
+### *关于*Rust的论文
 
 * [GPU Programming in Rust: Implementing High Level Abstractions in a
 Systems Level

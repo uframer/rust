@@ -1,7 +1,6 @@
-# Conditional Compilation
+# 条件编译
 
-Rust has a special attribute, `#[cfg]`, which allows you to compile code
-based on a flag passed to the compiler. It has two forms:
+Rust支持一个特殊的属性，叫做`#[cfg]`，有了它，你可以通过编译器命令行传递一个标志来决定某段代码是否需要编译。它有两种形式：
 
 ```rust
 #[cfg(foo)]
@@ -11,7 +10,7 @@ based on a flag passed to the compiler. It has two forms:
 # fn bar() {}
 ```
 
-They also have some helpers:
+Rust还定义了一些辅助方法，例如下面的`any`、`all`、`not`：
 
 ```rust
 #[cfg(any(unix, windows))]
@@ -24,15 +23,14 @@ They also have some helpers:
 # fn not_foo() {}
 ```
 
-These can nest arbitrarily:
+这些辅助方法还可以随意嵌套：
 
 ```rust
 #[cfg(any(not(unix), all(target_os="macos", target_arch = "powerpc")))]
 # fn foo() {}
 ```
 
-As for how to enable or disable these switches, if you’re using Cargo,
-they get set in the [`[features]` section][features] of your `Cargo.toml`:
+那么如何开关这些标志呢？如果你用Cargo，那么可以在`Cargo.toml`的,[`[features]`段][features]定义：
 
 [features]: http://doc.crates.io/manifest.html#the-features-section
 
@@ -41,7 +39,7 @@ they get set in the [`[features]` section][features] of your `Cargo.toml`:
 # no features by default
 default = []
 
-# Add feature "foo" here, then you can use it. 
+# Add feature "foo" here, then you can use it.
 # Our "foo" feature depends on nothing else.
 foo = []
 ```

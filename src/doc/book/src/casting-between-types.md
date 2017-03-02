@@ -1,9 +1,6 @@
-# Casting Between Types
+# 类型转换
 
-Rust, with its focus on safety, provides two different ways of casting
-different types between each other. The first, `as`, is for safe casts.
-In contrast, `transmute` allows for arbitrary casting, and is one of the
-most dangerous features of Rust!
+Rust非常关注安全，它提供了两种不同的类型转换方法。第一种转换方法是`as`关键字，用于安全转换。第二种转换方法使用`transmute`关键字，可用于任意的类型转换，它可以说是Rust中最危险的特性之一！
 
 # Coercion
 

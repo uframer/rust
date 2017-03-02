@@ -1,10 +1,7 @@
-# Syntax and Semantics
+# 语法和语义
 
-This chapter breaks Rust down into small chunks, one for each concept.
+本章会分很多小节介绍Rust的各个概念。
 
-If you’d like to learn Rust from the bottom up, reading this in order is a
-great way to do that.
+如果你想从头开始学Rust，那么阅读本章是一个不错的主意。
 
-These sections also form a reference for each concept, so if you’re reading
-another tutorial and find something confusing, you can find it explained
-somewhere in here.
+你也可以把本章作为基本概念的索引，如果你在别的地方看到了不熟悉的概念，可以直接来这章查阅。

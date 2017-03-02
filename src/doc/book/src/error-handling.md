@@ -1,4 +1,4 @@
-# Error Handling
+# 错误处理
 
 Like most programming languages, Rust encourages the programmer to handle
 errors in a particular way. Generally speaking, error handling is divided into
@@ -14,45 +14,44 @@ When done naïvely, error handling in Rust can be verbose and annoying. This
 section will explore those stumbling blocks and demonstrate how to use the
 standard library to make error handling concise and ergonomic.
 
-# Table of Contents
+## 目录
 
 This section is very long, mostly because we start at the very beginning with
 sum types and combinators, and try to motivate the way Rust does error handling
 incrementally. As such, programmers with experience in other expressive type
 systems may want to jump around.
 
-* [The Basics](#the-basics)
-    * [Unwrapping explained](#unwrapping-explained)
-    * [The `Option` type](#the-option-type)
-        * [Composing `Option<T>` values](#composing-optiont-values)
-    * [The `Result` type](#the-result-type)
-        * [Parsing integers](#parsing-integers)
-        * [The `Result` type alias idiom](#the-result-type-alias-idiom)
-    * [A brief interlude: unwrapping isn't evil](#a-brief-interlude-unwrapping-isnt-evil)
+* [基础知识](#the-basics)
+    * [展开操作](#unwrapping-explained)
+    * [`Option`类型](#the-option-type)
+        * [组装`Option<T>`类型的值](#composing-optiont-values)
+    * [`Result`类型 type](#the-result-type)
+        * [如何解析整数](#parsing-integers)
+        * [`Result`类型别名范式](#the-result-type-alias-idiom)
+    * [小插曲：展开并不*邪恶*](#a-brief-interlude-unwrapping-isnt-evil)
 * [Working with multiple error types](#working-with-multiple-error-types)
-    * [Composing `Option` and `Result`](#composing-option-and-result)
-    * [The limits of combinators](#the-limits-of-combinators)
-    * [Early returns](#early-returns)
-    * [The `try!` macro](#the-try-macro)
-    * [Defining your own error type](#defining-your-own-error-type)
-* [Standard library traits used for error handling](#standard-library-traits-used-for-error-handling)
-    * [The `Error` trait](#the-error-trait)
-    * [The `From` trait](#the-from-trait)
-    * [The real `try!` macro](#the-real-try-macro)
-    * [Composing custom error types](#composing-custom-error-types)
-    * [Advice for library writers](#advice-for-library-writers)
-* [Case study: A program to read population data](#case-study-a-program-to-read-population-data)
-    * [Initial setup](#initial-setup)
-    * [Argument parsing](#argument-parsing)
-    * [Writing the logic](#writing-the-logic)
-    * [Error handling with `Box<Error>`](#error-handling-with-boxerror)
-    * [Reading from stdin](#reading-from-stdin)
-    * [Error handling with a custom type](#error-handling-with-a-custom-type)
-    * [Adding functionality](#adding-functionality)
-* [The short story](#the-short-story)
+    * [组装`Option`和`Result`](#composing-option-and-result)
+    * [组合子的限制](#the-limits-of-combinators)
+    * [提早返回](#early-returns)
+    * [`try!`宏](#the-try-macro)
+    * [定义你自己的错误类型](#defining-your-own-error-type)
+* [标准库用于错误处理的trait](#standard-library-traits-used-for-error-handling)
+    * [`Error` trait](#the-error-trait)
+    * [`From` trait](#the-from-trait)
+    * [真正的`try!`宏](#the-real-try-macro)
+    * [组装自定义错误类型](#composing-custom-error-types)
+    * [给库作者的建议](#advice-for-library-writers)
+* [案例研究：一个读取人口数据的程序](#case-study-a-program-to-read-population-data)
+    * [初始设置](#initial-setup)
+    * [参数解析](#argument-parsing)
+    * [编写业务逻辑](#writing-the-logic)
+    * [使用`Box<Error>`类型做错误处理](#error-handling-with-boxerror)
+    * [从stdin读取](#reading-from-stdin)
+    * [使用自定义类型做错误处理](#error-handling-with-a-custom-type)
+    * [添加功能](#adding-functionality)
+* [小故事](#the-short-story)
 
-# The Basics
-
+# 基础知识
 You can think of error handling as using *case analysis* to determine whether
 a computation was successful or not. As you will see, the key to ergonomic error
 handling is reducing the amount of explicit case analysis the programmer has to
@@ -78,7 +77,7 @@ fn main() {
 }
 ```
 
-If you try running this code, the program will crash with a message like this:
+如果你运行上面的代码，那么这个程序会崩溃并输出如下内容：
 
 ```text
 thread 'main' panicked at 'Invalid number: 11', src/bin/panic-simple.rs:5
@@ -108,9 +107,9 @@ You can think of this style of error handling as similar to a bull running
 through a china shop. The bull will get to where it wants to go, but it will
 trample everything in the process.
 
-## Unwrapping explained
+## 展开操作
 
-In the previous example, we claimed
+在前面的例子中，我们 claimed
 that the program would simply panic if it reached one of the two error
 conditions, yet, the program does not include an explicit call to `panic` like
 the first example. This is because the
@@ -122,7 +121,7 @@ It would be better if we showed the code for unwrapping because it is so
 simple, but to do that, we will first need to explore the `Option` and `Result`
 types. Both of these types have a method called `unwrap` defined on them.
 
-### The `Option` type
+### `Option`类型
 
 The `Option` type is [defined in the standard library][5]:
 
@@ -205,13 +204,13 @@ impl<T> Option<T> {
 }
 ```
 
-The `unwrap` method *abstracts away the case analysis*. This is precisely the thing
+`unwrap`方法*abstracts away the case analysis*. This is precisely the thing
 that makes `unwrap` ergonomic to use. Unfortunately, that `panic!` means that
 `unwrap` is not composable: it is the bull in the china shop.
 
-### Composing `Option<T>` values
+### 组装`Option<T>`类型的值
 
-In an [example from before](#code-option-ex-string-find),
+在[前面的例子](#code-option-ex-string-find)中，
 we saw how to use `find` to discover the extension in a file name. Of course,
 not all file names have a `.` in them, so it's possible that the file name has
 no extension. This *possibility of absence* is encoded into the types using
@@ -1330,8 +1329,8 @@ overhead as a result from error handling because the `try!` macro encapsulates
 three things simultaneously:
 
 1. Case analysis.
-2. Control flow.
-3. Error type conversion.
+2. 控制流。
+3. 错误类型转换。
 
 When all three things are combined, we get code that is unencumbered by
 combinators, calls to `unwrap` or case analysis.
@@ -1349,7 +1348,7 @@ section](https://crates.io/crates/error).)
 
 It's time to revisit our custom `CliError` type and tie everything together.
 
-## Composing custom error types
+## 组装自定义错误类型
 
 In the last section, we looked at the real `try!` macro and how it does
 automatic type conversion for us by calling `From::from` on the error value.
@@ -1479,7 +1478,7 @@ impl From<num::ParseFloatError> for CliError {
 
 And that's it!
 
-## Advice for library writers
+## 给库开发者的建议
 
 If your library needs to report custom errors, then you should
 probably define your own error type. It's up to you whether or not to
@@ -1510,7 +1509,7 @@ library defines a single error type. This is used in the standard library
 for [`io::Result`](../std/io/type.Result.html)
 and [`fmt::Result`](../std/fmt/type.Result.html).
 
-# Case study: A program to read population data
+# 案例研究：一个读取人口数据的程序
 
 This section was long, and depending on your background, it might be
 rather dense. While there is plenty of example code to go along with
@@ -1534,7 +1533,7 @@ parse the program arguments and decode that stuff into Rust types automatically.
 [`csv`](https://crates.io/crates/csv),
 and [`rustc-serialize`](https://crates.io/crates/rustc-serialize) crates.
 
-## Initial setup
+## 初始设置
 
 We're not going to spend a lot of time on setting up a project with
 Cargo because it is already covered well in [the Cargo
@@ -1566,7 +1565,7 @@ cargo build --release
 # Outputs: Hello, world!
 ```
 
-## Argument parsing
+## 参数解析
 
 Let's get argument parsing out of the way. We won't go into too much
 detail on Getopts, but there is [some good documentation][15]
@@ -1627,7 +1626,7 @@ print for the program name and template. If the user has not passed in
 the help flag, we assign the proper variables to their corresponding
 arguments.
 
-## Writing the logic
+## 编写业务逻辑
 
 We all write code differently, but error handling is usually the last thing we
 want to think about. This isn't great for the overall design of a program, but
@@ -1722,7 +1721,7 @@ explore two different ways to approach handling these errors.
 I'd like to start with `Box<Error>`. Later, we'll see how defining our own
 error type can be useful.
 
-## Error handling with `Box<Error>`
+## 使用`Box<Error>`处理错误
 
 `Box<Error>` is nice because it *just works*. You don't need to define your own
 error types and you don't need any `From` implementations. The downside is that
@@ -1972,7 +1971,7 @@ fn search<P: AsRef<Path>>
 }
 ```
 
-## Error handling with a custom type
+## 使用自定义类型做错误处理
 
 Previously, we learned how to
 [compose errors using a custom error type](#composing-custom-error-types).
@@ -2090,7 +2089,7 @@ fn search<P: AsRef<Path>>
 
 No other changes are necessary.
 
-## Adding functionality
+## 添加功能
 
 Writing generic code is great, because generalizing stuff is cool, and
 it can then be useful later. But sometimes, the juice isn't worth the
@@ -2153,7 +2152,7 @@ This pretty much sums up our case study. From here, you should be ready to go
 out into the world and write your own programs and libraries with proper error
 handling.
 
-# The Short Story
+# 小故事
 
 Since this section is long, it is useful to have a quick summary for error
 handling in Rust. These are some good “rules of thumb." They are emphatically

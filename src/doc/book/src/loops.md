@@ -1,10 +1,10 @@
-# Loops
+# 循环
 
-Rust currently provides three approaches to performing some kind of iterative activity. They are: `loop`, `while` and `for`. Each approach has its own set of uses.
+Rust提供了三种循环结构：`loop`、`while`和`for`。
 
 ## loop
 
-The infinite `loop` is the simplest form of loop available in Rust. Using the keyword `loop`, Rust provides a way to loop indefinitely until some terminating statement is reached. Rust's infinite `loop`s look like this:
+无限循环`loop`是最简单的循环：
 
 ```rust,ignore
 loop {
@@ -14,7 +14,7 @@ loop {
 
 ## while
 
-Rust also has a `while` loop. It looks like this:
+Rust也支持`while`循环：
 
 ```rust
 let mut x = 5; // mut x: i32
@@ -31,32 +31,23 @@ while !done {
 }
 ```
 
-`while` loops are the correct choice when you’re not sure how many times
-you need to loop.
-
-If you need an infinite loop, you may be tempted to write this:
+对于无限循环来说，你可以用`while`这样写：
 
 ```rust,ignore
 while true {
 ```
 
-However, `loop` is far better suited to handle this case:
+不过，最好还是用`loop`：
 
 ```rust,ignore
 loop {
 ```
 
-Rust’s control-flow analysis treats this construct differently than a `while
-true`, since we know that it will always loop. In general, the more information
-we can give to the compiler, the better it can do with safety and code
-generation, so you should always prefer `loop` when you plan to loop
-infinitely.
+Rust的控制流分析对`loop`和`while`区别对待。简单来说，给编译器的信息越多，编译器就越能生成更好的代码。
 
 ## for
 
-The `for` loop is used to loop a particular number of times. Rust’s `for` loops
-work a bit differently than in other systems languages, however. Rust’s `for`
-loop doesn’t look like this “C-style” `for` loop:
+Rust的`for`循环同其他系统程序设计语言的`for`有一些不同。例如，C语言的`for`循环像下面这样：
 
 ```c
 for (x = 0; x < 10; x++) {
@@ -64,7 +55,7 @@ for (x = 0; x < 10; x++) {
 }
 ```
 
-Instead, it looks like this:
+而Rust的循环是这个样子：
 
 ```rust
 for x in 0..10 {
@@ -72,7 +63,7 @@ for x in 0..10 {
 }
 ```
 
-In slightly more abstract terms,
+或者我们换成一种更抽象的写法：
 
 ```rust,ignore
 for var in expression {
@@ -80,30 +71,20 @@ for var in expression {
 }
 ```
 
-The expression is an item that can be converted into an [iterator] using
-[`IntoIterator`]. The iterator gives back a series of elements. Each element is
-one iteration of the loop. That value is then bound to the name `var`, which is
-valid for the loop body. Once the body is over, the next value is fetched from
-the iterator, and we loop another time. When there are no more values, the `for`
-loop is over.
+这个写法中的`expression`是可以被[`IntoIterator`][`IntoIterator`]转换为[迭代器][iterator]的表达式。这个迭代器会返回一系列的元素。每个元素对应一个迭代，这个值被绑定到名字`var`，它的作用域是循环体。
 
 [iterator]: iterators.html
 [`IntoIterator`]: ../std/iter/trait.IntoIterator.html
 
-In our example, `0..10` is an expression that takes a start and an end position,
-and gives an iterator over those values. The upper bound is exclusive, though,
-so our loop will print `0` through `9`, not `10`.
+在我们的例子中，`0..10`就是`expression`，迭代器由它产生。这个范围是左闭右开区间，也就是数学上的[0, 10)。
 
-Rust does not have the “C-style” `for` loop on purpose. Manually controlling
-each element of the loop is complicated and error prone, even for experienced C
-developers.
+Rust不支持C风格的`for`循环。
 
-### Enumerate
+### 枚举
 
-When you need to keep track of how many times you have already looped, you can
-use the `.enumerate()` function.
+如果你想要知道现在是第几次迭代，可以使用`.enumerate()`函数。
 
-#### On ranges:
+#### 枚举范围：
 
 ```rust
 for (index, value) in (5..10).enumerate() {
@@ -111,7 +92,7 @@ for (index, value) in (5..10).enumerate() {
 }
 ```
 
-Outputs:
+输出：
 
 ```text
 index = 0 and value = 5
@@ -121,9 +102,9 @@ index = 3 and value = 8
 index = 4 and value = 9
 ```
 
-Don't forget to add the parentheses around the range.
+不要忘记在范围`5..10`外边加上括号。
 
-#### On iterators:
+#### 枚举迭代器：
 
 ```rust
 let lines = "hello\nworld".lines();
@@ -133,16 +114,16 @@ for (linenumber, line) in lines.enumerate() {
 }
 ```
 
-Outputs:
+输出：
 
 ```text
 0: hello
 1: world
 ```
 
-## Ending iteration early
+## 提前结束迭代
 
-Let’s take a look at that `while` loop we had earlier:
+我们先回忆一下前面的`while`循环：
 
 ```rust
 let mut x = 5;
@@ -159,11 +140,9 @@ while !done {
 }
 ```
 
-We had to keep a dedicated `mut` boolean variable binding, `done`, to know
-when we should exit out of the loop. Rust has two keywords to help us with
-modifying iteration: `break` and `continue`.
+在这个例子中，我们需要`done`这个布尔类型的`mut`的变量绑定来判断什么时候应该退出循环。Rust有两个关键字控制循环的流程：`break`和`continue`。
 
-In this case, we can write the loop in a better way with `break`:
+在这个例子里，我们可以用`break`关键字：
 
 ```rust
 let mut x = 5;
@@ -177,10 +156,9 @@ loop {
 }
 ```
 
-We now loop forever with `loop` and use `break` to break out early. Issuing an explicit `return` statement will also serve to terminate the loop early.
+`return`语句也会退出循环。
 
-`continue` is similar, but instead of ending the loop, it goes to the next
-iteration. This will only print the odd numbers:
+`continue`同其他语言一样，会直接进入下一次迭代：
 
 ```rust
 for x in 0..10 {
@@ -190,15 +168,9 @@ for x in 0..10 {
 }
 ```
 
-## Loop labels
+## 循环标签
 
-You may also encounter situations where you have nested loops and need to
-specify which one your `break` or `continue` statement is for. Like most
-other languages, by default a `break` or `continue` will apply to innermost
-loop. In a situation where you would like to `break` or `continue` for one
-of the outer loops, you can use labels to specify which loop the `break` or
- `continue` statement applies to. This will only print when both `x` and `y` are
- odd:
+有时你需要退出嵌套的循环，这时普通的`break`和`continue`语句就不够用了，这时可以在`break`和`continue`后添加标签来跳转到指定的循环：
 
 ```rust
 'outer: for x in 0..10 {

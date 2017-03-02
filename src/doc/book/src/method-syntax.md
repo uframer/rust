@@ -1,26 +1,10 @@
-# Method Syntax
+# 方法的语法
 
-Functions are great, but if you want to call a bunch of them on some data, it
-can be awkward. Consider this code:
+Rust通过`impl`关键字提供方法调用的语法。
 
-```rust,ignore
-baz(bar(foo));
-```
+## 方法调用
 
-We would read this left-to-right, and so we see ‘baz bar foo’. But this isn’t the
-order that the functions would get called in, that’s inside-out: ‘foo bar baz’.
-Wouldn’t it be nice if we could do this instead?
-
-```rust,ignore
-foo.bar().baz();
-```
-
-Luckily, as you may have guessed with the leading question, you can! Rust provides
-the ability to use this ‘method call syntax’ via the `impl` keyword.
-
-# Method calls
-
-Here’s how it works:
+看下面的例子：
 
 ```rust
 struct Circle {
@@ -41,23 +25,11 @@ fn main() {
 }
 ```
 
-This will print `12.566371`.
+它会输出：`12.566371`。
 
-We’ve made a `struct` that represents a circle. We then write an `impl` block,
-and inside it, define a method, `area`.
+我们定义了一个`struct`来表示一个圆。然后我们写了一个`impl`代码块，在里面定义了方法`area`。
 
-Methods take a special first parameter, of which there are three variants:
-`self`, `&self`, and `&mut self`. You can think of this first parameter as
-being the `foo` in `foo.bar()`. The three variants correspond to the three
-kinds of things `foo` could be: `self` if it’s a value on the stack,
-`&self` if it’s a reference, and `&mut self` if it’s a mutable reference.
-Because we took the `&self` parameter to `area`, we can use it like any
-other parameter. Because we know it’s a `Circle`, we can access the `radius`
-like we would with any other `struct`.
-
-We should default to using `&self`, as you should prefer borrowing over taking
-ownership, as well as taking immutable references over mutable ones. Here’s an
-example of all three variants:
+方法的第一个参数是一个特殊参数，你有三种选择：`self`、`&self`和`&mut self`。通常，我们应该选择`&self`。下面分别演示了这三种不同的用法：
 
 ```rust
 struct Circle {
@@ -81,8 +53,7 @@ impl Circle {
 }
 ```
 
-You can use as many `impl` blocks as you’d like. The previous example could
-have also been written like this:
+你可以为同一个`struct`写很多的`impl`代码块，前面的例子也可以写成：
 
 ```rust
 struct Circle {
@@ -110,11 +81,9 @@ impl Circle {
 }
 ```
 
-# Chaining method calls
+## 方法的链式调用
 
-So, now we know how to call a method, such as `foo.bar()`. But what about our
-original example, `foo.bar().baz()`? This is called ‘method chaining’. Let’s
-look at an example:
+我们可以连续调用一个对象上的多个方法，例如`foo.bar().baz()`。下面我们再看更为详细的例子：
 
 ```rust
 struct Circle {
@@ -137,27 +106,15 @@ fn main() {
     let c = Circle { x: 0.0, y: 0.0, radius: 2.0 };
     println!("{}", c.area());
 
+    # 链式调用
     let d = c.grow(2.0).area();
     println!("{}", d);
 }
 ```
 
-Check the return type:
+## 关联函数
 
-```rust
-# struct Circle;
-# impl Circle {
-fn grow(&self, increment: f64) -> Circle {
-# Circle } }
-```
-
-We say we’re returning a `Circle`. With this method, we can grow a new
-`Circle` to any arbitrary size.
-
-# Associated functions
-
-You can also define associated functions that do not take a `self` parameter.
-Here’s a pattern that’s very common in Rust code:
+如果你的第一个参数不是`self`，那么你定义的就是关联函数。下面的模式在Rust代码里非常常见：
 
 ```rust
 struct Circle {
@@ -181,18 +138,11 @@ fn main() {
 }
 ```
 
-This ‘associated function’ builds a new `Circle` for us. Note that associated
-functions are called with the `Struct::function()` syntax, rather than the
-`ref.method()` syntax. Some other languages call associated functions ‘static
-methods’.
+关联函数构造了一个新的`Circle`。请注意，调用关联函数的语法是`Struct::function()`而不是`ref.method()`。在其他语言中，关联函数被称作静态方法。
 
-# Builder Pattern
+## 构造器模式
 
-Let’s say that we want our users to be able to create `Circle`s, but we will
-allow them to only set the properties they care about. Otherwise, the `x`
-and `y` attributes will be `0.0`, and the `radius` will be `1.0`. Rust doesn’t
-have method overloading, named arguments, or variable arguments. We employ
-the builder pattern instead. It looks like this:
+假设我们希望我们的用户可以创建`Circle`对象，而且只需要用户设置他们感兴趣的属性的值。如果用户不设置，那么`x`和`y`的值会是`0.0`，`radius`会是`1.0`。Rust不支持方法重载、命名参数或者可变参数列表。为了实现这个需求，我们可以采用构造器模式：
 
 ```rust
 struct Circle {
@@ -251,9 +201,4 @@ fn main() {
 }
 ```
 
-What we’ve done here is make another `struct`, `CircleBuilder`. We’ve defined our
-builder methods on it. We’ve also defined our `area()` method on `Circle`. We
-also made one more method on `CircleBuilder`: `finalize()`. This method creates
-our final `Circle` from the builder. Now, we’ve used the type system to enforce
-our concerns: we can use the methods on `CircleBuilder` to constrain making
-`Circle`s in any way we choose.
+上面的例子中，`Circle`不再有`new`这个关联函数，构造对象的代码被放到了`CircleBuilder`中，由它来返回一个对象。说起来，还真是很不方便。

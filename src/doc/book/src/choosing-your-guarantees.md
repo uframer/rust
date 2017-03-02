@@ -14,7 +14,7 @@ Before proceeding, it is highly recommended that one reads about [ownership][own
 [ownership]: ownership.html
 [borrowing]: references-and-borrowing.html
 
-# Basic pointer types
+# 基本指针类型
 
 ## `Box<T>`
 
@@ -40,7 +40,7 @@ allowed to share references to this by the regular borrowing rules, checked at c
 
 [box]: ../std/boxed/struct.Box.html
 
-## `&T` and `&mut T`
+## `&T`和`&mut T`
 
 These are immutable and mutable references respectively. They follow the &ldquo;read-write lock&rdquo;
 pattern, such that one may either have only one mutable reference to some data, or any number of

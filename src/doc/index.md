@@ -1,4 +1,4 @@
-% Rust Documentation
+% Rust文档
 
 <style>
 nav {
@@ -11,18 +11,18 @@ Other unofficial documentation may exist elsewhere; for example, the [Rust
 Learning] project collects documentation from the community, and [Docs.rs]
 builds documentation for individual Rust packages.
 
-## API Documentation
+## API文档
 
 Rust provides a standard library with a number of features; [we host its
 documentation here][api].
 
-## Extended Error Documentation
+## 扩展错误文档
 
 Many of Rust's errors come with error codes, and you can request extended
 diagnostics from the compiler on those errors. We also [have the text of those
 extended errors on the web][err], if you prefer to read them that way.
 
-## The Rust Bookshelf
+## Rust书架
 
 Rust provides a number of book-length sets of documentation, collectively
 nicknamed 'The Rust Bookshelf.'

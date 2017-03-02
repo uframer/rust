@@ -1,23 +1,14 @@
-# Unsized Types
+# 未定大小类型
 
-Most types have a particular size, in bytes, that is knowable at compile time.
-For example, an `i32` is thirty-two bits big, or four bytes. However, there are
-some types which are useful to express, but do not have a defined size. These are
-called ‘unsized’ or ‘dynamically sized’ types. One example is `[T]`. This type
-represents a certain number of `T` in sequence. But we don’t know how many
-there are, so the size is not known.
+大多数类型都有一个特定的大小，以字节为单位，可以在编译时确定。例如，`i32`占用32个比特，或者说4个字节。不过，有些类型的大小可能并不能确定，我们称之为*未定大小*或者*动态大小*类型。例如，`[T]`这个类型表示某种类型`T`的序列，但是我们不知道这个序列包含多少个元素，因此它整体的大小也就不能确定下来。
 
-Rust understands a few of these types, but they have some restrictions. There
-are three:
+Rust支持少数几种未定大小类型，但是它们在使用上有限三条限制：
 
-1. We can only manipulate an instance of an unsized type via a pointer. An
-   `&[T]` works fine, but a `[T]` does not.
-2. Variables and arguments cannot have dynamically sized types.
-3. Only the last field in a `struct` may have a dynamically sized type; the
-   other fields must not. Enum variants must not have dynamically sized types as
-   data.
+1. 只能通过指针来操作未定大小类型的实例，例如，`&[T]`是合法的，`[T]`是非法的。
+2. 变量和参数的类型不能是动态大小类型。
+3. `struct`中，只有最后一个字段可以是动态大小类型，其他的字段不行。枚举变量不能用动态大小类型做数据。
 
-So why bother? Well, because `[T]` can only be used behind a pointer, if we
+既然后这么多限制，那为什么还要支持动态大小类型呢？ Well, because `[T]` can only be used behind a pointer, if we
 didn’t have language support for unsized types, it would be impossible to write
 this:
 

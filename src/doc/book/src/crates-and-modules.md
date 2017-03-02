@@ -1,4 +1,4 @@
-# Crates and Modules
+# 码箱和模块
 
 When a project starts getting large, it’s considered good software
 engineering practice to split it up into a bunch of smaller pieces, and then
@@ -6,11 +6,10 @@ fit them together. It is also important to have a well-defined interface, so
 that some of your functionality is private, and some is public. To facilitate
 these kinds of things, Rust has a module system.
 
-# Basic terminology: Crates and Modules
+# 基本术语：码箱和模块
 
 Rust has two distinct terms that relate to the module system: ‘crate’ and
-‘module’. A crate is synonymous with a ‘library’ or ‘package’ in other
-languages. Hence “Cargo” as the name of Rust’s package management tool: you
+‘module’. 码箱类似于其他语言中的‘library’或者‘package’。Hence “Cargo” as the name of Rust’s package management tool: you
 ship your crates to others with Cargo. Crates can produce an executable or a
 library, depending on the project.
 

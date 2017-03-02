@@ -1,9 +1,8 @@
-# Compiler Plugins
+% 编译器插件
 
-## Introduction
+# 介绍
 
-`rustc` can load compiler plugins, which are user-provided libraries that
-extend the compiler's behavior with new syntax extensions, lint checks, etc.
+`rustc`可以加载编译器插件，它们是用户提供的库，用于扩展编译器的行为，例如添加新的语法、lint检查等。
 
 A plugin is a dynamic library crate with a designated *registrar* function that
 registers extensions with `rustc`. Other crates can load these extensions using
@@ -25,7 +24,7 @@ The usual practice is to put compiler plugins in their own crate, separate from
 any `macro_rules!` macros or ordinary Rust code meant to be used by consumers
 of a library.
 
-# Syntax extensions
+# 语法扩展
 
 Plugins can extend Rust's syntax in various ways. One kind of syntax extension
 is the procedural macro. These are invoked the same way as [ordinary
@@ -100,7 +99,7 @@ pub fn plugin_registrar(reg: &mut Registry) {
 }
 ```
 
-Then we can use `rn!()` like any other macro:
+之后我们就可以像其他宏一样使用`rn!()`了：
 
 ```rust,ignore
 #![feature(plugin)]
@@ -162,7 +161,7 @@ However, the implementation may be a good starting point for an improved
 quasiquote as an ordinary plugin library.
 
 
-# Lint plugins
+# Lint插件
 
 Plugins can extend [Rust's lint
 infrastructure](../reference/attributes.html#lint-check-attributes) with

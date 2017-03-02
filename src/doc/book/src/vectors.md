@@ -1,34 +1,24 @@
-# Vectors
+# 向量
 
-A ‘vector’ is a dynamic or ‘growable’ array, implemented as the standard
-library type [`Vec<T>`][vec]. The `T` means that we can have vectors
-of any type (see the chapter on [generics][generic] for more).
-Vectors always allocate their data on the heap.
-You can create them with the `vec!` macro:
+*vector*是一个动态的或者说可增长的数组，它实现为一个标准库类型[`Vec<T>`][vec]。这里的`T`表示它里面可以容纳任意类型的值（参见[泛型][generic]）。Vector总是在堆上分配内存。可以使用`vec!`宏创建它的实例：
 
 ```rust
 let v = vec![1, 2, 3, 4, 5]; // v: Vec<i32>
 ```
 
-(Notice that unlike the `println!` macro we’ve used in the past, we use square
-brackets `[]` with `vec!` macro. Rust allows you to use either in either
-situation, this is just convention.)
+> 注意：我们之前调用`println!`宏是用的是`()`，这里调用`vec!`宏用的是`[]`。Rust对这两种写法都支持，具体用哪种只是一种使用习惯或者说约定。
 
-There’s an alternate form of `vec!` for repeating an initial value:
+如果`vec!`所有成员的初始值都是一样的，那么还有一种简单的写法：
 
 ```rust
-let v = vec![0; 10]; // A vector of ten zeroes.
+let v = vec![0; 10]; // 十个0组成的向量。
 ```
 
-Vectors store their contents as contiguous arrays of `T` on the heap. This means
-that they must be able to know the size of `T` at compile time (that is, how
-many bytes are needed to store a `T`?). The size of some things can't be known
-at compile time. For these you'll have to store a pointer to that thing:
-thankfully, the [`Box`][box] type works perfectly for this.
+Vector将它的内容存储为堆上的连续的`T`类型元素的数组。这意味着编译器必须能够在编译时就知道`T`的大小。如果有些类型的大小在编译时无法确定，那么你就只能保存指向它们的指针了，[`Box`][box]类型就是为此而生的。
 
-## Accessing elements
+## 访问元素
 
-To get the value at a particular index in the vector, we use `[]`s:
+使用`[]`通过索引访问元素：
 
 ```rust
 let v = vec![1, 2, 3, 4, 5];
@@ -36,9 +26,7 @@ let v = vec![1, 2, 3, 4, 5];
 println!("The third element of v is {}", v[2]);
 ```
 
-The indices count from `0`, so the third element is `v[2]`.
-
-It’s also important to note that you must index with the `usize` type:
+索引从`0`开始。注意，索引的类型必须是`usize`：
 
 ```rust,ignore
 let v = vec![1, 2, 3, 4, 5];
@@ -53,7 +41,7 @@ v[i];
 v[j];
 ```
 
-Indexing with a non-`usize` type gives an error that looks like this:
+如果索引的类型不是`usize`，那么编译器会给出类似下面的错误：
 
 ```text
 error: the trait bound `collections::vec::Vec<_> : core::ops::Index<i32>`
@@ -64,27 +52,24 @@ note: the type `collections::vec::Vec<_>` cannot be indexed by `i32`
 error: aborting due to previous error
 ```
 
-There’s a lot of punctuation in that message, but the core of it makes sense:
-you cannot index with an `i32`.
+上面的消息里标点符号满天飞，但是它传达的消息是很清楚的：你不能用`i32`做索引。
 
-## Out-of-bounds Access
+## 访问越界
 
-If you try to access an index that doesn’t exist:
+如果你试图访问一个并不存在的索引：
 
 ```rust,ignore
 let v = vec![1, 2, 3];
 println!("Item 7 is {}", v[7]);
 ```
 
-then the current thread will [panic] with a message like this:
+那么当前线程会[panic]并输出一条类似这样的消息：
 
 ```text
 thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 7'
 ```
 
-If you want to handle out-of-bounds errors without panicking, you can use
-methods like [`get`][get] or [`get_mut`][get_mut] that return `None` when
-given an invalid index:
+如果你想避免出现panic，那么可以使用[`get`][get]或者[`get_mut`][get_mut]方法，它们会在索引不存在时返回`None`：
 
 ```rust
 let v = vec![1, 2, 3];
@@ -94,10 +79,9 @@ match v.get(7) {
 }
 ```
 
-## Iterating
+## 迭代
 
-Once you have a vector, you can iterate through its elements with `for`. There
-are three versions:
+可以用`for`遍历向量的所有元素。有三种不同的写法：
 
 ```rust
 let mut v = vec![1, 2, 3, 4, 5];
@@ -115,8 +99,7 @@ for i in v {
 }
 ```
 
-Note: You cannot use the vector again once you have iterated by taking ownership of the vector.
-You can iterate the vector multiple times by taking a reference to the vector whilst iterating.
+注意：在迭代过程获得向量的所有权之后，你就不能再使用它了。You can iterate the vector multiple times by taking a reference to the vector whilst iterating.
 For example, the following code does not compile.
 
 ```rust,ignore

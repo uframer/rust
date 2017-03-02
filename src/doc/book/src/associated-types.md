@@ -1,11 +1,6 @@
-# Associated Types
+# 关联类型
 
-Associated types are a powerful part of Rust’s type system. They’re related to
-the idea of a ‘type family’, in other words, grouping multiple types together. That
-description is a bit abstract, so let’s dive right into an example. If you want
-to write a `Graph` trait, you have two types to be generic over: the node type
-and the edge type. So you might write a trait, `Graph<N, E>`, that looks like
-this:
+关联类型是Rust类型系统提供的强大工具。它的思路类似于一种*类型家族*，换句话说，将多个类型划为一组。如果这种描述对你来说太抽象的话，我们就先看一个例子。假设你想要开发一个`Graph` trait，那么你可能需要抽象出两种泛化类型：代表节点的类型和代表边的类型，例如写成`Graph<N, E>`：
 
 ```rust
 trait Graph<N, E> {
@@ -15,19 +10,15 @@ trait Graph<N, E> {
 }
 ```
 
-While this sort of works, it ends up being awkward. For example, any function
-that wants to take a `Graph` as a parameter now _also_ needs to be generic over
-the `N`ode and `E`dge types too:
+尽管上面的代码能够正确运行，但是却很别扭。例如，任何任何把`Graph`作为参数的函数现在***都***需要将自己声明为需要`N`和`E`这两个类型参数：
 
 ```rust,ignore
 fn distance<N, E, G: Graph<N, E>>(graph: &G, start: &N, end: &N) -> u32 { ... }
 ```
 
-Our distance calculation works regardless of our `Edge` type, so the `E` stuff in
-this signature is a distraction.
+计算距离并不需要考虑代表边的`E`类型，所以这里的`E`是多余的。
 
-What we really want to say is that a certain `E`dge and `N`ode type come together
-to form each kind of `Graph`. We can do that with associated types:
+我们真正要表达的是`E`和`N`类型组合在一起可以具体确定某一种`Graph`类型。下面我们用关联类型实现这一目的：
 
 ```rust
 trait Graph {
@@ -40,19 +31,19 @@ trait Graph {
 }
 ```
 
-Now, our clients can be abstract over a given `Graph`:
+现在，我们的客户就可以直接使用`Graph`提供的抽象了：
 
 ```rust,ignore
 fn distance<G: Graph>(graph: &G, start: &G::N, end: &G::N) -> u32 { ... }
 ```
 
-No need to deal with the `E`dge type here!
+甚至都不用写`E`这个类型了！
 
-Let’s go over all this in more detail.
+接下来我们仔细看看这个关联类型的例子是怎么回事。
 
-## Defining associated types
+## 定义关联类型
 
-Let’s build that `Graph` trait. Here’s the definition:
+我们先定义`Graph` trait：
 
 ```rust
 trait Graph {
@@ -64,12 +55,9 @@ trait Graph {
 }
 ```
 
-Simple enough. Associated types use the `type` keyword, and go inside the body
-of the trait, with the functions.
+使用`type`关键字定义关联类型。
 
-These type declarations work the same way as those for functions. For example,
-if we wanted our `N` type to implement `Display`, so we can print the nodes out,
-we could do this:
+这些类型声明同函数的类型声明类似。（🐷：这句如何理解？）例如，如果需要`N`类型实现`Display`（以便能够输出节点的信息），就可以像下面这样声明：
 
 ```rust
 use std::fmt;
@@ -83,10 +71,9 @@ trait Graph {
 }
 ```
 
-## Implementing associated types
+## 实现关联类型
 
-Just like any trait, traits that use associated types use the `impl` keyword to
-provide implementations. Here’s a simple implementation of Graph:
+下面是`Graph` trait的实现：
 
 ```rust
 # trait Graph {

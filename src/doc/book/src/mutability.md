@@ -1,4 +1,4 @@
-# Mutability
+# 可变性
 
 Mutability, the ability to change something, works a bit differently in Rust
 than in other languages. The first aspect of mutability is its non-default
@@ -59,7 +59,7 @@ Note that here, the `x` is mutable, but not the `y`.
 
 [pattern]: patterns.html
 
-# Interior vs. Exterior Mutability
+# 内部可变性和外部可变性
 
 However, when we say something is ‘immutable’ in Rust, that doesn’t mean that
 it’s not able to be changed: we are referring to its ‘exterior mutability’ that

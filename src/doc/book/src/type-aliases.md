@@ -1,4 +1,4 @@
-# Type Aliases
+# 类型别名
 
 The `type` keyword lets you declare an alias of another type:
 

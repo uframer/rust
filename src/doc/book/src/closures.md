@@ -1,4 +1,4 @@
-# Closures
+# 闭包
 
 Sometimes it is useful to wrap up a function and _free variables_ for better
 clarity and reuse. The free variables that can be used come from the
@@ -6,7 +6,7 @@ enclosing scope and are ‘closed over’ when used in the function. From this, 
 get the name ‘closures’ and Rust provides a really great implementation of
 them, as we’ll see.
 
-# Syntax
+# 语法
 
 Closures look like this:
 
@@ -63,7 +63,7 @@ let plus_one_v3 = |x: i32|          x + 1  ;
 
 Small differences, but they’re similar.
 
-# Closures and their environment
+# 闭包和它们的环境
 
 The environment for a closure can include bindings from its enclosing scope in
 addition to parameters and local bindings. It looks like this:
@@ -145,7 +145,7 @@ let takes_nums = || nums;
 in our closure, we have to take ownership of `nums`. It’s the same as if we’d
 passed `nums` to a function that took ownership of it.
 
-## `move` closures
+## `move`闭包
 
 We can force our closure to take ownership of its environment with the `move`
 keyword:

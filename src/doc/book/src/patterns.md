@@ -1,4 +1,4 @@
-# Patterns
+# 模式
 
 Patterns are quite common in Rust. We use them in [variable
 bindings][bindings], [match expressions][match], and other places, too. Let’s go

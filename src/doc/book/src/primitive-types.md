@@ -1,13 +1,13 @@
-# Primitive Types
+# 基本类型
 
 The Rust language has a number of types that are considered ‘primitive’. This
 means that they’re built-in to the language. Rust is structured in such a way
 that the standard library also provides a number of useful types built on top
 of these ones, as well, but these are the most primitive.
 
-# Booleans
+# 布尔类型
 
-Rust has a built-in boolean type, named `bool`. It has two values, `true` and `false`:
+Rust的内建布尔类型叫`bool`。它有两个可选值，`true`和`false`：
 
 ```rust
 let x = true;
@@ -15,19 +15,17 @@ let x = true;
 let y: bool = false;
 ```
 
-A common use of booleans is in [`if` conditionals][if].
+布尔类型经常用于[`if`表达式的条件][if]中。
 
 [if]: if.html
 
-You can find more documentation for `bool`s [in the standard library
-documentation][bool].
+你可以在[标准库文档][bool]中找到更多关于`bool`的信息。
 
 [bool]: ../std/primitive.bool.html
 
 # `char`
 
-The `char` type represents a single Unicode scalar value. You can create `char`s
-with a single tick: (`'`)
+`char`类型代表一个Unicode标量值。你可以用单引号（`'`）书写`char`类型的文字量：
 
 ```rust
 let x = 'x';
@@ -42,7 +40,7 @@ documentation][char].
 
 [char]: ../std/primitive.char.html
 
-# Numeric types
+# 数值类型
 
 Rust has a variety of numeric types in a few categories: signed and unsigned,
 fixed and variable, floating-point and integer.
@@ -107,7 +105,7 @@ which account for two types: `isize` and `usize`.
 Rust also has two floating point types: `f32` and `f64`. These correspond to
 IEEE-754 single and double precision numbers.
 
-# Arrays
+# 数组
 
 Like many programming languages, Rust has list types to represent a sequence of
 things. The most basic is the *array*, a fixed-size list of elements of the
@@ -157,7 +155,7 @@ documentation][array].
 
 [array]: ../std/primitive.array.html
 
-# Slices
+# 切片
 
 A ‘slice’ is a reference to (or “view” into) another data structure. They are
 useful for allowing safe, efficient access to a portion of an array without
@@ -168,7 +166,7 @@ variable binding. Slices have a defined length, and can be mutable or immutable.
 Internally, slices are represented as a pointer to the beginning of the data
 and a length.
 
-## Slicing syntax
+## 切片语法
 
 You can use a combo of `&` and `[]` to create a slice from various things. The
 `&` indicates that slices are similar to [references], which we will cover in
@@ -207,7 +205,7 @@ documentation][str].
 
 [str]: ../std/primitive.str.html
 
-# Tuples
+# 元组
 
 A tuple is an ordered list of fixed size. Like this:
 
@@ -268,7 +266,7 @@ comma:
 (0); // A zero in parentheses.
 ```
 
-## Tuple Indexing
+## 元组索引
 
 You can also access fields of a tuple with indexing syntax:
 
@@ -291,7 +289,7 @@ documentation][tuple].
 
 [tuple]: ../std/primitive.tuple.html
 
-# Functions
+# 函数
 
 Functions also have a type! They look like this:
 

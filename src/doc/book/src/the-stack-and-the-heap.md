@@ -1,4 +1,4 @@
-# The Stack and the Heap
+# 栈和堆
 
 As a systems language, Rust operates at a low level. If you’re coming from a
 high-level language, there are some aspects of systems programming that you may
@@ -15,7 +15,7 @@ now. Once you have the basics down, learning more about how allocators are
 implemented, virtual memory, and other advanced topics will reveal the leaks in
 this particular abstraction.
 
-# Memory management
+# 内存管理
 
 These two terms are about memory management. The stack and the heap are
 abstractions that help you determine when to allocate and deallocate memory.
@@ -29,7 +29,7 @@ program. But it’s effectively unlimited in size, and is globally accessible.
 Note this meaning of heap, which allocates arbitrary-sized blocks of memory in arbitrary
 order, is quite different from the heap data structure.  
 
-# The Stack
+# 栈
 
 Let’s talk about this Rust program:
 

@@ -1,16 +1,13 @@
-# Structs
+# 结构体
 
-`struct`s are a way of creating more complex data types. For example, if we were
-doing calculations involving coordinates in 2D space, we would need both an `x`
-and a `y` value:
+可以用`struct`创建复杂数据类型。例如，我们要做二维空间的几何运算，我们需要`x`坐标和`y`坐标的值：
 
 ```rust
 let origin_x = 0;
 let origin_y = 0;
 ```
 
-A `struct` lets us combine these two into a single, unified datatype with `x`
-and `y` as field labels:
+可以用`struct`将这两个变量组合在一起：
 
 ```rust
 struct Point {
@@ -25,19 +22,13 @@ fn main() {
 }
 ```
 
-There’s a lot going on here, so let’s break it down. We declare a `struct` with
-the `struct` keyword, and then with a name. By convention, `struct`s begin with
-a capital letter and are camel cased: `PointInSpace`, not `Point_In_Space`.
+按照约定，`struct`类型的名字应该采用驼峰命名法，例如：`PointInSpace`。
 
-We can create an instance of our `struct` via `let`, as usual, but we use a `key:
-value` style syntax to set each field. The order doesn’t need to be the same as
-in the original declaration.
+我们可以用`let`创建`struct`的实例，并用`键:值`对的风格初始化每个字段。初始化字段的顺序不一定要同声明时的顺序一样。
 
-Finally, because fields have names, we can access them through dot
-notation: `origin.x`.
+字段通过`.`来访问，例如`origin.x`。
 
-The values in `struct`s are immutable by default, like other bindings in Rust.
-Use `mut` to make them mutable:
+默认情况下，`struct`中的值是不可变的。可以使用`mut`声明可变的`struct`：
 
 ```rust
 struct Point {
@@ -54,10 +45,9 @@ fn main() {
 }
 ```
 
-This will print `The point is at (5, 0)`.
+上面的程序会输出：`The point is at (5, 0)`。
 
-Rust does not support field mutability at the language level, so you cannot
-write something like this:
+在语言级别，Rust不支持单独定义字段的可变性，所以你不能这么写：
 
 ```rust,ignore
 struct Point {
@@ -66,10 +56,7 @@ struct Point {
 }
 ```
 
-Mutability is a property of the binding, not of the structure itself. If you’re
-used to field-level mutability, this may seem strange at first, but it
-significantly simplifies things. It even lets you make things mutable on a temporary
-basis:
+可变性是绑定的属性，不是结构体的属性。如果你习惯了字段级别的可变性约束，可能会不太适应，但是Rust的设计可以简化很多事情。你甚至可以临时改变一个绑定的可变性：
 
 ```rust,ignore
 struct Point {
@@ -88,8 +75,7 @@ fn main() {
 }
 ```
 
-Your structure can still contain `&mut` references, which will let
-you do some kinds of mutation:
+不过，你的结构体可以包含`&mut`指针，这样就可以实现某种程度上的可变性：
 
 ```rust
 struct Point {
@@ -139,10 +125,9 @@ fn main() {
 }
 ```
 
-# Update syntax
+# 更新语法
 
-A `struct` can include `..` to indicate that you want to use a copy of some
-other `struct` for some of the values. For example:
+`struct`可以包含`..`关键字来表示你希望从另一个`struct`来复制某些值：
 
 ```rust
 struct Point3d {
@@ -155,9 +140,7 @@ let mut point = Point3d { x: 0, y: 0, z: 0 };
 point = Point3d { y: 1, .. point };
 ```
 
-This gives `point` a new `y`, but keeps the old `x` and `z` values. It doesn’t
-have to be the same `struct` either, you can use this syntax when making new
-ones, and it will copy the values you don’t specify:
+上面的代码会给`point`的`y`字段赋一个新的值，同时维持`x`和`z`的值不变。在这个例子里，`..`作用于同一个`stuct`，但是它可以应用于不同的`struct`，此时会从旧的`stuct`复制原有的值：
 
 ```rust
 # struct Point3d {
@@ -169,14 +152,9 @@ let origin = Point3d { x: 0, y: 0, z: 0 };
 let point = Point3d { z: 1, x: 2, .. origin };
 ```
 
-# Tuple structs
+# 元组结构体
 
-Rust has another data type that’s like a hybrid between a [tuple][tuple] and a
-`struct`, called a ‘tuple struct’. Tuple structs have a name, but their fields
-don't. They are declared with the `struct` keyword, and then with a name
-followed by a tuple:
-
-[tuple]: primitive-types.html#tuples
+Rust的*元组结构体*就像是[元组][tuple]和`struct`的混合体。元组结构体有一个名字，但是它的字段没有名字。它们也用`struct`关键字声明，但是名字后面跟着的是一个元组：
 
 ```rust
 struct Color(i32, i32, i32);
@@ -186,11 +164,9 @@ let black = Color(0, 0, 0);
 let origin = Point(0, 0, 0);
 ```
 
-Here, `black` and `origin` are not the same type, even though they contain the
-same values.
 
-The members of a tuple struct may be accessed by dot notation or destructuring
-`let`, just like regular tuples:
+可以通过`.`来访问元组结构体的成员，也可以通过所谓的destructuring
+`let`语法来访问，就如同普通的元组一样：
 
 ```rust
 # struct Color(i32, i32, i32);

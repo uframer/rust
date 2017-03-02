@@ -1,18 +1,12 @@
-# Foreign Function Interface
+# 外部函数接口
 
-# Introduction
+# 介绍
 
-This guide will use the [snappy](https://github.com/google/snappy)
-compression/decompression library as an introduction to writing bindings for
-foreign code. Rust is currently unable to call directly into a C++ library, but
-snappy includes a C interface (documented in
-[`snappy-c.h`](https://github.com/google/snappy/blob/master/snappy-c.h)).
+本章会用[snappy](https://github.com/google/snappy)压缩/解压缩库为例子来演示如何绑定到外部代码。Rust现在还不能直接调用C++库，不过snappy包括了一个C语言的接口（位于[`snappy-c.h`](https://github.com/google/snappy/blob/master/snappy-c.h)）中。
 
-## A note about libc
+## libc介绍
 
-Many of these examples use [the `libc` crate][libc], which provides various
-type definitions for C types, among other things. If you’re trying these
-examples yourself, you’ll need to add `libc` to your `Cargo.toml`:
+下面的许多例子都用到了[`libc`码箱][libc]，这个crate提供了各种各样的C类型的定义和相关的内容。如果你想自己实验这些例子，需要将`libc`添加到你的`Cargo.toml`：
 
 ```toml
 [dependencies]
@@ -21,12 +15,11 @@ libc = "0.2.0"
 
 [libc]: https://crates.io/crates/libc
 
-and add `extern crate libc;` to your crate root.
+然后在你的crate的根文件中添加：`extern crate libc;`。
 
-## Calling foreign functions
+## 调用外部函数
 
-The following is a minimal example of calling a foreign function which will
-compile if snappy is installed:
+下面的例子演示了如何调用snappy的外部接口：
 
 ```rust,no_run
 # #![feature(libc)]
@@ -44,23 +37,13 @@ fn main() {
 }
 ```
 
-The `extern` block is a list of function signatures in a foreign library, in
-this case with the platform's C ABI. The `#[link(...)]` attribute is used to
-instruct the linker to link against the snappy library so the symbols are
-resolved.
+`extern`代码块列出了外部库中的函数的签名，在这个例子里是C的。`#[link(...)]`属性用于告诉连接器需要连接到snappy库才能解析这些符号。
 
-Foreign functions are assumed to be unsafe so calls to them need to be wrapped
-with `unsafe {}` as a promise to the compiler that everything contained within
-truly is safe. C libraries often expose interfaces that aren't thread-safe, and
-almost any function that takes a pointer argument isn't valid for all possible
-inputs since the pointer could be dangling, and raw pointers fall outside of
-Rust's safe memory model.
+Rust假定所有的外部函数都是不安全的，因此对它们的调用都需要包上`unsafe {}`，这个语法的含义是你向编译器保证这个代码块里面的所有操作都是安全的（也就是说责任在你的身上）。C语言库的对外接口通常都不是线程安全的，而且几乎所有接受指针类型参数的函数都不能保证所有的输入都是有效的（例如，这个参数可能是一个野指针），此外所有的裸指针都不符合Rust的安全内存模型。
 
-When declaring the argument types to a foreign function, the Rust compiler
-cannot check if the declaration is correct, so specifying it correctly is part
-of keeping the binding correct at runtime.
+在声明外部函数的参数类型时，Rust编译器无法检查这个声明是否是正确的，所以正确性的检查是在运行时才做的。
 
-The `extern` block can be extended to cover the entire snappy API:
+我们例子中的`extern`代码块可以包含snappy的所有API：
 
 ```rust,no_run
 # #![feature(libc)]
@@ -87,7 +70,7 @@ extern {
 # fn main() {}
 ```
 
-# Creating a safe interface
+# 创建安全接口
 
 The raw C API needs to be wrapped to provide memory safety and make use of higher-level concepts
 like vectors. A library can choose to expose only the safe, high-level interface and hide the unsafe
@@ -240,7 +223,7 @@ mod tests {
 }
 ```
 
-# Destructors
+# 析构函数
 
 Foreign libraries often hand off ownership of resources to the calling code.
 When this occurs, we must use Rust's destructors to provide safety and guarantee
@@ -248,7 +231,7 @@ the release of these resources (especially in the case of panic).
 
 For more about destructors, see the [Drop trait](../std/ops/trait.Drop.html).
 
-# Callbacks from C code to Rust functions
+# 从C代码调用Rust函数
 
 Some external libraries require the usage of callbacks to report back their
 current state or intermediate data to the caller.
@@ -302,7 +285,7 @@ In this example Rust's `main()` will call `trigger_callback()` in C,
 which would, in turn, call back to `callback()` in Rust.
 
 
-## Targeting callbacks to Rust objects
+## 从C代码访问Rust对象
 
 The former example showed how a global function can be called from C code.
 However it is often desired that the callback is targeted to a special
@@ -367,7 +350,7 @@ void trigger_callback() {
 }
 ```
 
-## Asynchronous callbacks
+## 异步回调函数
 
 In the previously given examples the callbacks are invoked as a direct reaction
 to a function call to the external C library.
@@ -549,9 +532,9 @@ however, windows uses the `C` calling convention, so `C` would be used. This
 means that in our previous example, we could have used `extern "system" { ... }`
 to define a block for all windows systems, not only x86 ones.
 
-# Interoperability with foreign code
+# 同外部代码的交互性
 
-Rust guarantees that the layout of a `struct` is compatible with the platform's
+Rust保证 that the layout of a `struct` is compatible with the platform's
 representation in C only if the `#[repr(C)]` attribute is applied to it.
 `#[repr(C, packed)]` can be used to lay out struct members without padding.
 `#[repr(C)]` can also be applied to an enum.
@@ -574,9 +557,9 @@ The [`libc` crate on crates.io][libc] includes type aliases and function
 definitions for the C standard library in the `libc` module, and Rust links
 against `libc` and `libm` by default.
 
-# Variadic functions
+# 可变参数函数
 
-In C, functions can be 'variadic', meaning they accept a variable number of arguments. This can
+在C语言中，函数的参数列表可以是“可变的”，也就是说参数列表的长度可以是不固定的。This can
 be achieved in Rust by specifying `...` within the argument list of a foreign function declaration:
 
 ```no_run
@@ -665,7 +648,7 @@ void register(void (*f)(void (*)(int), int)) {
 
 No `transmute` required!
 
-# Calling Rust code from C
+# 从C代码调用Rust代码
 
 You may wish to compile Rust code in a way so that it can be called from C. This is
 fairly easy, but requires a few things:
@@ -683,7 +666,7 @@ discussed above in "[Foreign Calling
 Conventions](ffi.html#foreign-calling-conventions)". The `no_mangle`
 attribute turns off Rust's name mangling, so that it is easier to link to.
 
-# FFI and panics
+# FFI和panic
 
 It’s important to be mindful of `panic!`s when working with FFI. A `panic!`
 across an FFI boundary is undefined behavior. If you’re writing code that may
@@ -712,7 +695,7 @@ for more information.
 
 [`catch_unwind()`]: ../std/panic/fn.catch_unwind.html
 
-# Representing opaque structs
+# 如何表示opaque struct
 
 Sometimes, a C library wants to provide a pointer to something, but not let you
 know the internal details of the thing it wants. The simplest way is to use a
@@ -742,7 +725,7 @@ the details and memory layout of the struct are private. This gives some amount
 of type safety. These structures are called ‘opaque’. Here’s an example, in C:
 
 ```c
-struct Foo; /* Foo is a structure, but its contents are not part of the public interface */
+struct Foo; /* Foo是一个结构体，但是它的内容并没有声明在公开接口中 */
 struct Bar;
 void foo(struct Foo *arg);
 void bar(struct Bar *arg);

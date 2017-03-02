@@ -1,4 +1,4 @@
-# Macros
+# 宏
 
 By now you’ve learned about many of the tools Rust provides for abstracting and
 reusing code. These units of code reuse have a rich semantic structure. For
@@ -28,7 +28,7 @@ to say that macros are bad; they are part of Rust because sometimes they’re
 needed for truly concise, well-abstracted code. Just keep this tradeoff in
 mind.
 
-# Defining a macro
+# 定义一个宏
 
 You may have seen the `vec!` macro, used to initialize a [vector][vector] with
 any number of elements.
@@ -87,7 +87,7 @@ function named `vec`. In prose, we informally write a macro’s name with an
 exclamation point, e.g. `vec!`. The exclamation point is part of the invocation
 syntax and serves to distinguish a macro from an ordinary function.
 
-## Matching
+## 匹配
 
 The macro is defined through a series of rules, which are pattern-matching
 cases. Above, we had
@@ -141,7 +141,7 @@ we get the compiler error
 error: no rules expected the token `z`
 ```
 
-## Expansion
+## 展开
 
 The right-hand side of a macro rule is ordinary Rust syntax, for the most part.
 But we can splice in bits of syntax captured by the matcher. From the original
@@ -186,7 +186,7 @@ this is not determined until we use the macro as an expression. With care, you
 can write a macro whose expansion works in several contexts. For example,
 shorthand for a data type could be valid as either an expression or a pattern.
 
-## Repetition
+## 重复
 
 The repetition operator follows two principal rules:
 
@@ -365,7 +365,7 @@ fn main() {
 
 [items]: ../reference/items.html
 
-# Recursive macros
+# 递归宏
 
 A macro’s expansion can include more macro invocations, including invocations
 of the very same macro being expanded.  These recursive macros are useful for
@@ -404,7 +404,7 @@ fn main() {
 }
 ```
 
-# Debugging macro code
+# 如何调试宏
 
 To see the results of expanding macros, run `rustc --pretty expanded`. The
 output represents a whole crate, so you can also feed it back in to `rustc`,

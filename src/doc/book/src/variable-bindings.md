@@ -1,8 +1,6 @@
-# Variable Bindings
+% 变量绑定
 
-Virtually every non-'Hello World’ Rust program uses *variable bindings*. They
-bind some value to a name, so it can be used later. `let` is
-used to introduce a binding, like this:
+`let`关键字用于定义*变量绑定*，也就是将一个值绑定到一个名字上，以便以后使用。例如：
 
 ```rust
 fn main() {
@@ -10,52 +8,35 @@ fn main() {
 }
 ```
 
-Putting `fn main() {` in each example is a bit tedious, so we’ll leave that out
-in the future. If you’re following along, make sure to edit your `main()`
-function, rather than leaving it off. Otherwise, you’ll get an error.
+在每个例子里都写`fn main() {`有一点儿繁琐，所以我们在将来就省略它。如果你想要自己试验这些代码，请确补上`main()`函数。
 
-# Patterns
+# 模式
 
-In many languages, a variable binding would be called a *variable*, but Rust’s
-variable bindings have a few tricks up their sleeves. For example the
-left-hand side of a `let` statement is a ‘[pattern][pattern]’, not a
-variable name. This means we can do things like:
+在许多语言中，变量绑定会被称作*变量*，但是Rust的变量绑定有些不一样的地方。例如，左手边的`let`语句是一个[模式][pattern]，不是一个变量名。这意味着我们可以像下面这样写：
 
 ```rust
 let (x, y) = (1, 2);
 ```
 
-After this statement is evaluated, `x` will be one, and `y` will be two.
-Patterns are really powerful, and have [their own section][pattern] in the
-book. We don’t need those features for now, so we’ll keep this in the back
-of our minds as we go forward.
+在这条语句被计算时，`x`会是`1`，`y`会是`2`。模式是十分强大的工具，我们会[单独介绍][pattern]它。现在我们还不需要了解那么多，所以现在只要知道有这一回事就行了。
 
 [pattern]: patterns.html
 
-# Type annotations
+# 类型标注
 
-Rust is a statically typed language, which means that we specify our types up
-front, and they’re checked at compile time. So why does our first example
-compile? Well, Rust has this thing called ‘type inference’. If it can figure
-out what the type of something is, Rust doesn’t require you to explicitly type
-it out.
+Rust是一个静态类型语言，这意味着我们需要先指定类型，然后这些类型会在编译时由编译器检查。这样说来，我们的第一个例子里并没有指明类型，那它又是怎样编译通过的呢？答案就是，Rust支持**类型推断**。如果Rust能猜出一个东西的类型是什么，你就不用去明确地指定它的类型。
 
-We can add the type if we want to, though. Types come after a colon (`:`):
+不过，就算有了类型推断，你还是可以直接指定类型。类型名出线在冒号（`:`）之后：
 
 ```rust
 let x: i32 = 5;
 ```
 
-If I asked you to read this out loud to the rest of the class, you’d say “`x`
-is a binding with the type `i32` and the value `5`.”
+上面这行代码的含义是：`x`是一个具有`i32`类型的绑定，它的值是`5`。
 
-In this case we chose to represent `x` as a 32-bit signed integer. Rust has
-many different primitive integer types. They begin with `i` for signed integers
-and `u` for unsigned integers. The possible integer sizes are 8, 16, 32, and 64
-bits.
+Rust有很多不同的基本整数类型，以`i`开头的是有符号整数，以`u`开头的是无符号整数。整数的宽度可以是8、16、32或者64位。
 
-In future examples, we may annotate the type in a comment. The examples will
-look like this:
+在以后的例子中，我们会在注释里标明类型，比如前面的例子会写成这样：
 
 ```rust
 fn main() {
@@ -63,21 +44,18 @@ fn main() {
 }
 ```
 
-Note the similarities between this annotation and the syntax you use with
-`let`. Including these kinds of comments is not idiomatic Rust, but we'll
-occasionally include them to help you understand what the types that Rust
-infers are.
+你可以注意到这个注释的写法类似于`let`的语法。
 
-# Mutability
+# 可变性
 
-By default, bindings are *immutable*. This code will not compile:
+默认情况下，绑定是*不可变*的。下面的代码过不了编译：
 
 ```rust,ignore
 let x = 5;
 x = 10;
 ```
 
-It will give you this error:
+编译错误信息类似于：
 
 ```text
 error: re-assignment of immutable variable `x`
@@ -85,32 +63,20 @@ error: re-assignment of immutable variable `x`
      ^~~~~~~
 ```
 
-If you want a binding to be mutable, you can use `mut`:
+如果你需要一个可变的绑定，需要使用`mut`关键字：
 
 ```rust
 let mut x = 5; // mut x: i32
 x = 10;
 ```
 
-There is no single reason that bindings are immutable by default, but we can
-think about it through one of Rust’s primary focuses: safety. If you forget to
-say `mut`, the compiler will catch it, and let you know that you have mutated
-something you may not have intended to mutate. If bindings were mutable by
-default, the compiler would not be able to tell you this. If you _did_ intend
-mutation, then the solution is quite easy: add `mut`.
+将绑定设计为默认*不可变*有很多原因，但是我们可以将它们归结为Rust的主要目标：安全性。如果你忘记添加`mut`关键字，编译器会发现并告诉你。只有确实需要时，才应该添加`mut`关键字。
 
-There are other good reasons to avoid mutable state when possible, but they’re
-out of the scope of this guide. In general, you can often avoid explicit
-mutation, and so it is preferable in Rust. That said, sometimes, mutation is
-what you need, so it’s not forbidden.
+# 绑定的初始化
 
-# Initializing bindings
+Rust的变量绑定同其他语言的变量有另一个不同之处：绑定必须在使用前被初始化。
 
-Rust variable bindings have one more aspect that differs from other languages:
-bindings are required to be initialized with a value before you're allowed to
-use them.
-
-Let’s try it out. Change your `src/main.rs` file to look like this:
+下面我们试一下。将你的`src/main.rs`文件改成如下面这样：
 
 ```rust
 fn main() {
@@ -120,8 +86,7 @@ fn main() {
 }
 ```
 
-You can use `cargo build` on the command line to build it. You’ll get a
-warning, but it will still print "Hello, world!":
+你可以使用`cargo build`命令构建这个程序。你会看到一个警告，但是它还是会打出"Hello, world!"：
 
 ```text
    Compiling hello_world v0.0.1 (file:///home/you/projects/hello_world)
@@ -131,9 +96,7 @@ src/main.rs:2     let x: i32;
                       ^
 ```
 
-Rust warns us that we never use the variable binding, but since we never use
-it, no harm, no foul. Things change if we try to actually use this `x`,
-however. Let’s do that. Change your program to look like this:
+Rust警告我们这个变量绑定没有被用到，但也正是因为没有用到它，也就不会有什么危害，因此不会报错。如果我们试图使用这个绑定`x`，事情就会其变化。我们试一下，将你的程序改成这样：
 
 ```rust,ignore
 fn main() {
@@ -143,7 +106,7 @@ fn main() {
 }
 ```
 
-And try to build it. You’ll get an error:
+现在试着构建它。你会看到一个错误：
 
 ```bash
 $ cargo build
@@ -159,33 +122,19 @@ error: aborting due to previous error
 Could not compile `hello_world`.
 ```
 
-Rust will not let us use a value that has not been initialized.
+Rust不允许使用一个未初始化的绑定。
 
-Let us take a minute to talk about this stuff we've added to `println!`.
+我们顺带讲一下上面例子里出现的`println!`的用法。
 
-If you include two curly braces (`{}`, some call them moustaches...) in your
-string to print, Rust will interpret this as a request to interpolate some sort
-of value. *String interpolation* is a computer science term that means "stick
-in the middle of a string." We add a comma, and then `x`, to indicate that we
-want `x` to be the value we’re interpolating. The comma is used to separate
-arguments we pass to functions and macros, if you’re passing more than one.
+如果你在要打印的字符串里插入一对大括号（`{}`），那么Rust会在这里插入后面列出的参数值，用过C语言的`printf`的读到这里大概就知道是怎么回事了。如果你只是写了`{}`，那么Rust会根据参数的类型安排一个合理的打印格式；你也可以直接指定打印格式，[这里][format]有大量的选项。
 
-When you use the curly braces, Rust will attempt to display the value in a
-meaningful way by checking out its type. If you want to specify the format in a
-more detailed manner, there are a [wide number of options available][format].
-For now, we'll stick to the default: integers aren't very complicated to
-print.
+`println!`就先介绍到这里。
 
 [format]: ../std/fmt/index.html
 
-# Scope and shadowing
+# 作用域和遮蔽
 
-Let’s get back to bindings. Variable bindings have a scope - they are
-constrained to live in the block they were defined in. A block is a collection
-of statements enclosed by `{` and `}`. Function definitions are also blocks!
-In the following example we define two variable bindings, `x` and `y`, which
-live in different blocks. `x` can be accessed from inside the `fn main() {}`
-block, while `y` can be accessed only from inside the inner block:
+变量绑定的作用域开始于它出现的位置，结束于当前代码块（block）的末尾。代码块以`{`开头，以`}`结尾。函数体也是包在`{`和`}`之间，所以也是代码块。直接看下面的例子：
 
 ```rust,ignore
 fn main() {
@@ -194,14 +143,11 @@ fn main() {
         let y: i32 = 3;
         println!("The value of x is {} and value of y is {}", x, y);
     }
-    println!("The value of x is {} and value of y is {}", x, y); // This won't work.
+    println!("The value of x is {} and value of y is {}", x, y); // 因为y已经脱离作用域，所以这里会编译失败
 }
 ```
 
-The first `println!` would print "The value of x is 17 and the value of y is
-3", but this example cannot be compiled successfully, because the second
-`println!` cannot access the value of `y`, since it is not in scope anymore.
-Instead we get this error:
+编译上面的代码会出现错误：
 
 ```bash
 $ cargo build
@@ -222,35 +168,27 @@ Could not compile `hello`.
 To learn more, run the command again with --verbose.
 ```
 
-Additionally, variable bindings can be shadowed. This means that a later
-variable binding with the same name as another binding that is currently in
-scope will override the previous binding.
+Rust语言有一个不同于C系列语言的行为，这就是变量绑定可以被遮蔽（shadowing）。即使是在同一个代码块内，后面做出的变量绑定会遮蔽当前作用域中可见的同名绑定，社会之可以绑定到不同的类型。
 
 ```rust
 let x: i32 = 8;
 {
-    println!("{}", x); // Prints "8".
+    println!("{}", x); // 输出"8".
     let x = 12;
-    println!("{}", x); // Prints "12".
+    println!("{}", x); // 输出"12".
 }
-println!("{}", x); // Prints "8".
+println!("{}", x); // 输出"8".
 let x =  42;
-println!("{}", x); // Prints "42".
+println!("{}", x); // 输出"42".
 ```
 
-Shadowing and mutable bindings may appear as two sides of the same coin, but
-they are two distinct concepts that can't always be used interchangeably. For
-one, shadowing enables us to rebind a name to a value of a different type. It
-is also possible to change the mutability of a binding. Note that shadowing a 
-name does not alter or destroy the value it was bound to, and the value will
-continue to exist until it goes out of scope, even if it is no longer accessible
-by any means.
+*绑定遮蔽*和*可变绑定*有些类似，但是它们不是一回事需要注意区分。绑定遮蔽可以改变绑定的可变性，但是更重要的是它可以将同一个名字绑定到不同的类型上去。此外，当一个绑定被遮蔽时，Rust不会修改或者销毁被绑定的值，也就是不会调用它的析构方法（参考[`Drop`特征](drop.html)），即使这个值再也无法被访问到，它只有在脱离作用域时才会被销毁。
 
 ```rust
 let mut x: i32 = 1;
 x = 7;
-let x = x; // `x` is now immutable and is bound to `7`.
+let x = x; // `x`现在被绑定到7，并且是不可变的
 
 let y = 4;
-let y = "I can also be bound to text!"; // `y` is now of a different type.
+let y = "I can also be bound to text!"; // `y`现在是一个不同类型的绑定
 ```

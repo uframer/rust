@@ -1,4 +1,4 @@
-# Enums
+# 枚举
 
 An `enum` in Rust is a type that represents data that is one of
 several possible variants. Each variant in the `enum` can optionally
@@ -64,9 +64,9 @@ equality yet, but we’ll find out in the [`traits`][traits] section.
 [match]: match.html
 [traits]: traits.html
 
-# Constructors as functions
+## 构造函数
 
-An `enum` constructor can also be used like a function. For example:
+`enum`的构造函数也可以如函数那样使用。例如：
 
 ```rust
 # enum Message {
@@ -75,7 +75,7 @@ An `enum` constructor can also be used like a function. For example:
 let m = Message::Write("Hello, world".to_string());
 ```
 
-is the same as
+同下面的代码是等价的：
 
 ```rust
 # enum Message {

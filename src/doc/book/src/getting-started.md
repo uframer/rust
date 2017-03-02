@@ -1,4 +1,4 @@
-# Getting Started
+# 上手
 
 This first chapter of the book will get us going with Rust and its tooling.
 First, we’ll install Rust. Then, the classic ‘Hello World’ program. Finally,
@@ -10,7 +10,7 @@ the start of each command. We’ll see many tutorials and examples around the we
 that follow this convention: `$` for commands run as our regular user, and `#`
 for commands we should be running as an administrator.
 
-# Installing Rust
+# 安装Rust
 
 The first step to using Rust is to install it. Generally speaking, you’ll need
 an Internet connection to run the commands in this section, as we’ll be
@@ -24,17 +24,15 @@ see the website][platform-support].
 
 [platform-support]: https://forge.rust-lang.org/platform-support.html
 
-## Installing Rust
+## 安装Rust
 
-All you need to do on Unix systems like Linux and macOS is open a
-terminal and type this:
+如果我们的系统是Linux或者macOS，我们只需要在终端中敲入如下一行命令即可：
 
 ```bash
 $ curl https://sh.rustup.rs -sSf | sh
 ```
 
-It will download a script, and start the installation. If everything
-goes well, you’ll see this appear:
+这行命令会下载一个脚本并开始安装。如果一切顺利，你应该会见到如下输出：
 
 ```text
 Rust is installed now. Great! 
@@ -50,7 +48,7 @@ page of the Rust website.
 [rustup-init.exe]: https://win.rustup.rs
 [install]: https://www.rust-lang.org/install.html
 
-## Uninstalling
+## 卸载
 
 Uninstalling Rust is as easy as installing it:
 
@@ -134,7 +132,7 @@ practicing it early on is good.
 [SolidOak]: https://github.com/oakes/SolidOak
 [various editors]: https://github.com/rust-lang/rust/blob/master/src/etc/CONFIGS.md
 
-## Creating a Project File
+## 创建一个项目文件
 
 First, make a file to put your Rust code in. Rust doesn't care where your code
 lives, but for this book, I suggest making a *projects* directory in your home
@@ -151,7 +149,7 @@ $ cd hello_world
 > Note: If you’re on Windows and not using PowerShell, the `~` may not work.
 > Consult the documentation for your shell for more details.
 
-## Writing and Running a Rust Program
+## 编写并运行一个Rust程序
 
 We need to create a source file for our Rust program. Rust files always end
 in a *.rs* extension. If you are using more than one word in your filename,

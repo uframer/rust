@@ -1,13 +1,13 @@
-# Attributes
+% 属性
 
-Declarations can be annotated with ‘attributes’ in Rust. They look like this:
+Rust的声明可以附带*属性（attribute）*，例如：
 
 ```rust
 #[test]
 # fn foo() {}
 ```
 
-or like this:
+或者：
 
 ```rust
 # mod foo {
@@ -15,8 +15,7 @@ or like this:
 # }
 ```
 
-The difference between the two is the `!`, which changes what the attribute
-applies to:
+上面两个例子的差别在于一个感叹号`!`，这个符号会改变属性应用的对象：
 
 ```rust,ignore
 #[foo]
@@ -27,12 +26,9 @@ mod bar {
 }
 ```
 
-The `#[foo]` attribute applies to the next item, which is the `struct`
-declaration. The `#![bar]` attribute applies to the item enclosing it, which is
-the `mod` declaration. Otherwise, they’re the same. Both change the meaning of
-the item they’re attached to somehow.
+`#[foo]`这个属性应用于下一个项目，也就是`struct Foo;`这个声明。`#![bar]`这个属性则应用于包含它的那个外部项目，也就是`mod bar`设个声明。除此以外，它们的功能是相同的。
 
-For example, consider a function like this:
+例如，请看下面这个函数：
 
 ```rust
 #[test]
@@ -41,13 +37,11 @@ fn check() {
 }
 ```
 
-It is marked with `#[test]`. This means it’s special: when you run
-[tests][tests], this function will execute. When you compile as usual, it won’t
-even be included. This function is now a test function.
+它被标记为`#[test]`，这表示它是特殊的：当你运行[测试][tests]时，这个函数会被执行；当你做普通编译时，它甚至都不参加编译。也就是说，这个函数是一个测试专用函数。
 
 [tests]: testing.html
 
-Attributes may also have additional data:
+属性也可以带有参数：
 
 ```rust
 #[inline(always)]
@@ -55,7 +49,7 @@ fn super_fast_fn() {
 # }
 ```
 
-Or even keys and values:
+或者：
 
 ```rust
 #[cfg(target_os = "macos")]
@@ -63,8 +57,6 @@ mod macos_only {
 # }
 ```
 
-Rust attributes are used for a number of different things. There is a full list
-of attributes [in the reference][reference]. Currently, you are not allowed to
-create your own attributes, the Rust compiler defines them.
+Rust的属性用于很多方面。完整的用法请参考[这里][reference]。现在，还不支持自定义属性，你只能使用Rust编译器提供的属性。
 
 [reference]: ../reference/attributes.html

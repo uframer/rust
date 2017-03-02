@@ -1,29 +1,28 @@
-# The Rust Programming Language
+# Rust程序设计语言
 
-This is the main source code repository for [Rust]. It contains the compiler,
-standard library, and documentation.
+这里是[Rust][Rust]程序设计语言的源码仓库，包括编译器、标准库和文档。
 
 [Rust]: https://www.rust-lang.org
 
-## Quick Start
+## 快速上手
 
-Read ["Installing Rust"] from [The Book].
+可以阅读[The Book][The Book]中["Installing Rust"]["Installing Rust"]部分。
 
 ["Installing Rust"]: https://doc.rust-lang.org/book/getting-started.html#installing-rust
 [The Book]: https://doc.rust-lang.org/book/index.html
 
-## Building from Source
+## 从源码构建
 
-1. Make sure you have installed the dependencies:
+1. 确保你安装了如下所需软件：
 
-   * `g++` 4.7 or later or `clang++` 3.x
-   * `python` 2.7 (but not 3.x)
-   * GNU `make` 3.81 or later
-   * `cmake` 3.4.3 or later
+   * `g++` 4.7或更高版本，或者`clang++` 3.x
+   * `python` 2.7（不支持3.x版本）
+   * GNU `make` 3.81或更高版本
+   * `cmake` 3.4.3或更高版本
    * `curl`
    * `git`
 
-2. Clone the [source] with `git`:
+2. 用`git`从[GitHub][source]克隆源码：
 
    ```sh
    $ git clone https://github.com/rust-lang/rust.git
@@ -32,28 +31,25 @@ Read ["Installing Rust"] from [The Book].
 
 [source]: https://github.com/rust-lang/rust
 
-3. Build and install:
+3. 构建并安装：
 
     ```sh
     $ ./x.py build && sudo ./x.py dist --install
     ```
 
-    > ***Note:*** Install locations can be adjusted by copying the config file
-    > from `./src/bootstrap/config.toml.example` to `./config.toml`, and
-    > adjusting the `prefix` option under `[install]`. Various other options are
-    > also supported, and are documented in the config file.
+    > ***注意：***可以修改配置文件调整安装目录。将`./src/bootstrap/config.toml.example`复制到`./config.toml`，然后修改`[install]`下的`prefix`选项指定安装前缀。配置文件里还有很多选项可以配置，请参考配置文件中内置的说明。
 
-    When complete, `sudo ./x.py dist --install` will place several programs into
-    `/usr/local/bin`: `rustc`, the Rust compiler, and `rustdoc`, the
-    API-documentation tool. This install does not include [Cargo],
-    Rust's package manager, which you may also want to build.
+    `sudo ./x.py dist --install`运行完成后，会在`/usr/local/bin`里添加几个程序：
+    * `rustc`：Rust编译器
+    * `rustdoc`：API文档的生成工具
+
+    不过，这个命令不会给你安装Rust的包管理器[Cargo]，你需要单独构建它。
 
 [Cargo]: https://github.com/rust-lang/cargo
 
-### Building on Windows
+### 在Windows上构建
 
-There are two prominent ABIs in use on Windows: the native (MSVC) ABI used by
-Visual Studio, and the GNU ABI used by the GCC toolchain. Which version of Rust
+Windows平台上有两种主要的ABI：Visual Studio使用的MSVC原生ABI，以及GCC工具链使用的GNU ABI。Which version of Rust
 you need depends largely on what C/C++ libraries you want to interoperate with:
 for interop with software produced by Visual Studio use the MSVC build of Rust;
 for interop with GNU software built using the MinGW/MSYS2 toolchain use the GNU
@@ -61,18 +57,18 @@ build.
 
 #### MinGW
 
-[MSYS2][msys2] can be used to easily build Rust on Windows:
+可以用[MSYS2][msys2]轻松地在Windows上构建Rust：
 
 [msys2]: https://msys2.github.io/
 
-1. Grab the latest [MSYS2 installer][msys2] and go through the installer.
+1. 从[这里][msys2]下载最新的安装程序并安装。
 
 2. Run `mingw32_shell.bat` or `mingw64_shell.bat` from wherever you installed
    MSYS2 (i.e. `C:\msys64`), depending on whether you want 32-bit or 64-bit
    Rust. (As of the latest version of MSYS2 you have to run `msys2_shell.cmd
    -mingw32` or `msys2_shell.cmd -mingw64` from the command line instead)
 
-3. From this terminal, install the required tools:
+3. 在终端中安装所需的工具：
 
    ```sh
    # Update package mirrors (may be needed if you have a fresh install of MSYS2)
@@ -93,7 +89,7 @@ build.
                mingw-w64-x86_64-gcc
    ```
 
-4. Navigate to Rust's source code (or clone it), then build it:
+4. 进入Rust的源码目录，然后配置并构建：
 
    ```sh
    $ ./x.py build && ./x.py dist --install
@@ -122,7 +118,7 @@ CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.
 python x.py build
 ```
 
-#### Specifying an ABI
+#### 如何指定一种ABI
 
 Each specific ABI can also be used from either environment (for example, using
 the GNU ABI in powershell) by using an explicit build triple. The available
@@ -139,7 +135,7 @@ invoking `x.py` commands, or by copying the `config.toml` file (as described
 in Building From Source), and modifying the `build` option under the `[build]`
 section.
 
-### Configure and Make
+### `configure`和`make`
 
 While it's not the recommended build system, this project also provides a
 configure script and makefile (the latter of which just invokes `x.py`).
@@ -153,18 +149,17 @@ When using the configure script, the generated config.mk` file may override the
 `config.toml` file. To go back to the `config.toml` file, delete the generated
 `config.mk` file.
 
-## Building Documentation
+## 如何构建文档
 
-If you’d like to build the documentation, it’s almost the same:
+运行如下命令构建文档：
 
 ```sh
 $ ./x.py doc
 ```
 
-The generated documentation will appear in a top-level `doc` directory,
-created by the `make` rule.
+生成的文档会出现在最上层的`doc`目录。
 
-## Notes
+## 备注
 
 Since the Rust compiler is written in Rust, it must be built by a
 precompiled "snapshot" version of itself (made in an earlier state of
@@ -189,19 +184,19 @@ There is more advice about hacking on Rust in [CONTRIBUTING.md].
 
 [CONTRIBUTING.md]: https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md
 
-## Getting Help
+## 如何获得帮助
 
-The Rust community congregates in a few places:
+Rust社区主要集中在下面几个地方：
 
-* [Stack Overflow] - Direct questions about using the language.
+* [Stack Overflow] - 直接针对语言用法的问题。
 * [users.rust-lang.org] - General discussion and broader questions.
-* [/r/rust] - News and general discussion.
+* [/r/rust] - 新闻和综合讨论。
 
 [Stack Overflow]: http://stackoverflow.com/questions/tagged/rust
 [/r/rust]: http://reddit.com/r/rust
 [users.rust-lang.org]: https://users.rust-lang.org/
 
-## Contributing
+## 如何做出贡献
 
 To contribute to Rust, please see [CONTRIBUTING](CONTRIBUTING.md).
 

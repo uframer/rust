@@ -1,14 +1,11 @@
-# Comments
+# 注释
 
-Now that we have some functions, it’s a good idea to learn about comments.
-Comments are notes that you leave to other programmers to help explain things
-about your code. The compiler mostly ignores them.
+Rust支持两种类型的注释：*单行注释*和*文档注释*。
 
-Rust has two kinds of comments that you should care about: *line comments*
-and *doc comments*.
+单行注释以‘//’开头，直到行尾。
 
 ```rust
-// Line comments are anything after ‘//’ and extend to the end of the line.
+// 单行注释从‘//’开始，一直拓展到行尾。
 
 let x = 5; // This is also a line comment.
 
@@ -17,8 +14,7 @@ let x = 5; // This is also a line comment.
 // more readable.
 ```
 
-The other kind of comment is a doc comment. Doc comments use `///` instead of
-`//`, and support Markdown notation inside:
+文档注释用`///`开头，其中的内容支持Markdown语法：
 
 ```rust
 /// Adds one to the number given.
@@ -38,9 +34,7 @@ fn add_one(x: i32) -> i32 {
 }
 ```
 
-There is another style of doc comment, `//!`, to comment containing items (e.g.
-crates, modules or functions), instead of the items following it. Commonly used
-inside crates root (lib.rs) or modules root (mod.rs):
+文档注释还有另一种风格，以`//!`开始，它所说明的是包含这段注释的项目（例如，crate、模块、函数等）。它通常用于crate的根（lib.rs）或者模块的根（mod.rs）：
 
 ```
 //! # The Rust Standard Library
@@ -49,11 +43,6 @@ inside crates root (lib.rs) or modules root (mod.rs):
 //! functionality for building portable Rust software.
 ```
 
-When writing doc comments, providing some examples of usage is very, very
-helpful. You’ll notice we’ve used a new macro here: `assert_eq!`. This compares
-two values, and `panic!`s if they’re not equal to each other. It’s very helpful
-in documentation. There’s another macro, `assert!`, which `panic!`s if the
-value passed to it is `false`.
+如果在编写文档注释时能够同时提供一些例子的话，是非常有助于读者理解的。在上面的例子或者中我们用了一个新的宏：`assert_eq!`。这个宏比较两个值，如果它们不相等，就会`panic!`。在文档的代码例子中使用这个宏可以明确地说明代码的行为。另一个宏`assert!`，会在传给它的值为`false`时`panic!`。
 
-You can use the [`rustdoc`](documentation.html) tool to generate HTML documentation
-from these doc comments, and also to run the code examples as tests!
+你可以使用[`rustdoc`](documentation.html)工具按照文档注释生成HTML文档，还可以将注释中的代码例子当做测试运行！
