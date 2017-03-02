@@ -6,7 +6,7 @@
 
 ## 快速上手
 
-可以阅读[The Book][The Book]中["Installing Rust"]["Installing Rust"]部分。
+可以阅读[Rust程序设计语言][The Book]一书中[安装Rust]["Installing Rust"]这一节。
 
 ["Installing Rust"]: https://doc.rust-lang.org/book/getting-started.html#installing-rust
 [The Book]: https://doc.rust-lang.org/book/index.html
@@ -49,11 +49,7 @@
 
 ### 在Windows上构建
 
-Windows平台上有两种主要的ABI：Visual Studio使用的MSVC原生ABI，以及GCC工具链使用的GNU ABI。Which version of Rust
-you need depends largely on what C/C++ libraries you want to interoperate with:
-for interop with software produced by Visual Studio use the MSVC build of Rust;
-for interop with GNU software built using the MinGW/MSYS2 toolchain use the GNU
-build.
+Windows平台上有两种主要的ABI：Visual Studio使用的MSVC原生ABI，以及GCC工具链使用的GNU ABI。选择哪种版本的Rust取决于你依赖于哪些C/C++库：如果你主要同Visual Studio生成的软件交互，那么请选择MSVC构建的Rust；如果你主要同MinGW/MSYS2生成的GNU软件交互，那么请使用GNU工具链构建的Rust。
 
 #### MinGW
 
@@ -63,10 +59,7 @@ build.
 
 1. 从[这里][msys2]下载最新的安装程序并安装。
 
-2. Run `mingw32_shell.bat` or `mingw64_shell.bat` from wherever you installed
-   MSYS2 (i.e. `C:\msys64`), depending on whether you want 32-bit or 64-bit
-   Rust. (As of the latest version of MSYS2 you have to run `msys2_shell.cmd
-   -mingw32` or `msys2_shell.cmd -mingw64` from the command line instead)
+2. 从你的MSYS2安装目录（例如，`C:\msys64`）运行`mingw32_shell.bat`或`mingw64_shell.bat`（取决于你要用32位还是64位的Rust）。如果你用的是最新版的MSYS2，可能要运行`msys2_shell.cmd -mingw32`或`msys2_shell.cmd -mingw64`。
 
 3. 在终端中安装所需的工具：
 
@@ -97,21 +90,15 @@ build.
 
 #### MSVC
 
-MSVC builds of Rust additionally require an installation of Visual Studio 2013
-(or later) so `rustc` can use its linker. Make sure to check the “C++ tools”
-option.
+MSVC版本的Rust还需要你在系统里安装Visual Studio 2013（或更新版本），`rustc`需要使用它提供的链接器。请注意在安装时勾选`C++ tools`选项。
 
-With these dependencies installed, you can build the compiler in a `cmd.exe`
-shell with:
+安装完这些依赖关系之后，你就可以在`cmd.exe`命令行窗口中运行构建命令了：
 
 ```sh
 > python x.py build
 ```
 
-Currently building Rust only works with some known versions of Visual Studio. If
-you have a more recent version installed the build system doesn't understand
-then you may need to force rustbuild to use an older version. This can be done
-by manually calling the appropriate vcvars file before running the bootstrap.
+目前，你只能使用特定版本的Visual Studio中编译Rust。如果系统中的VS版本太新以至于Rust的构建系统还没有支持的话，你可能需要强制要求`rustbuild`使用一个旧版本的VS，做法是先调用合适版本的vcvars批处理文件：
 
 ```
 CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat"
@@ -161,26 +148,21 @@ $ ./x.py doc
 
 ## 备注
 
-Since the Rust compiler is written in Rust, it must be built by a
-precompiled "snapshot" version of itself (made in an earlier state of
-development). As such, source builds require a connection to the Internet, to
-fetch snapshots, and an OS that can execute the available snapshot binaries.
+由于Rust编译器是使用Rust开发的，所以你需要一个已经编译好的*快照*版本的Rust编译器才能编译Rust编译器自身。正因如此，你需要联网才能执行构建动作，构建脚本会先去网上下载一个可用的快照版本编译器。
 
-Snapshot binaries are currently built and tested on several platforms:
+目前我们在如下平台上构建并测试Rust编译器的快照：
 
-| Platform / Architecture        | x86 | x86_64 |
+| 平台 / 架构                     | x86 | x86_64 |
 |--------------------------------|-----|--------|
 | Windows (7, 8, Server 2008 R2) | ✓   | ✓      |
 | Linux (2.6.18 or later)        | ✓   | ✓      |
 | OSX (10.7 Lion or later)       | ✓   | ✓      |
 
-You may find that other platforms work, but these are our officially
-supported build environments that are most likely to work.
+其他的平台可能也会有，但是我们官方支持的平台只有这几个。
 
-Rust currently needs between 600MiB and 1.5GiB to build, depending on platform.
-If it hits swap, it will take a very long time to build.
+现在你需要600MiB到1.5GiB的内存来构建Rust，具体的大小可能随着平台变化。如果用到了交换空间，那需要的时间可就长了。
 
-There is more advice about hacking on Rust in [CONTRIBUTING.md].
+[贡献力量][CONTRIBUTING.md]一节中更为详细地介绍了如何hack Rust的建议。
 
 [CONTRIBUTING.md]: https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md
 
