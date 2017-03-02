@@ -30,8 +30,7 @@ mind.
 
 # 定义一个宏
 
-You may have seen the `vec!` macro, used to initialize a [vector][vector] with
-any number of elements.
+我们之前用过`vec!`宏初始化[向量][vector]，它可以接受任意数量的元素。
 
 [vector]: vectors.html
 
@@ -40,8 +39,7 @@ let x: Vec<u32> = vec![1, 2, 3];
 # assert_eq!(x, [1, 2, 3]);
 ```
 
-This can’t be an ordinary function, because it takes any number of arguments.
-But we can imagine it as syntactic shorthand for
+在Rust中，这不可能通过普通函数实现，不同于Java，Rust并没有直接在语法层面支持变长参数列表。不过，我们可以猜测它可能是这样实现的：
 
 ```rust
 let x: Vec<u32> = {
@@ -54,10 +52,9 @@ let x: Vec<u32> = {
 # assert_eq!(x, [1, 2, 3]);
 ```
 
-We can implement this shorthand, using a macro: [^actual]
+下面我们用Rust的宏机制实现上面的想法：[^actual]
 
-[^actual]: The actual definition of `vec!` in libcollections differs from the
-           one presented here, for reasons of efficiency and reusability.
+[^actual]: `libcollections`中`vec!`的实现方式并不像上面写的那样，库中的实现方式效率和可重用性都更好。
 
 ```rust
 macro_rules! vec {
@@ -227,7 +224,7 @@ This system is based on
 "[Macro-by-Example](https://www.cs.indiana.edu/ftp/techreports/TR206.pdf)"
 (PDF link).
 
-# Hygiene
+# 清洁宏
 
 Some languages implement macros using simple text substitution, which leads to
 various problems. For example, this C program prints `13` instead of the
@@ -313,7 +310,7 @@ fn main() {
 }
 ```
 
-This works because Rust has a [hygienic macro system]. Each macro expansion
+上面的代码能够正确运行是因为Rust有一个[清洁宏系统][hygienic macro system]。Each macro expansion
 happens in a distinct ‘syntax context’, and each variable is tagged with the
 syntax context where it was introduced. It’s as though the variable `state`
 inside `main` is painted a different "color" from the variable `state` inside
@@ -423,10 +420,9 @@ they are unstable and require feature gates.
 * `trace_macros!(true)` will enable a compiler message every time a macro is
   expanded. Use `trace_macros!(false)` later in expansion to turn it off.
 
-# Syntactic requirements
+# 句法需求
 
-Even when Rust code contains un-expanded macros, it can be parsed as a full
-[syntax tree][ast]. This property can be very useful for editors and other
+即使Rust代码包含有未展开的宏，也可以被解析为一颗完整的[语法树][ast]。This property can be very useful for editors and other
 tools that process code. It also has a few consequences for the design of
 Rust’s macro system.
 
@@ -492,7 +488,7 @@ this case, you can write `$(I $i:ident)* E $e:expr`.
 
 [item]: ../reference/items.html
 
-# Scoping and macro import/export
+# 作用域和宏的导入/导出
 
 Macros are expanded at an early stage in compilation, before name resolution.
 One downside is that scoping works differently for macros, compared to other
@@ -567,7 +563,7 @@ be imported.
 The Rust Reference has a [listing of macro-related
 attributes](../reference/attributes.html#macro-related-attributes).
 
-# The variable `$crate`
+# `$crate`变量
 
 A further difficulty occurs when a macro is used in multiple crates. Say that
 `mylib` defines
@@ -651,7 +647,7 @@ macro_rules! bct {
 Exercise: use macros to reduce duplication in the above definition of the
 `bct!` macro.
 
-# Common macros
+# 常用的宏
 
 Here are some common macros you’ll see in Rust code.
 

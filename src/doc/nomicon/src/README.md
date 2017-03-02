@@ -1,4 +1,4 @@
-# The Rustonomicon
+# Rustonomicon
 
 #### The Dark Arts of Advanced and Unsafe Rust Programming
 

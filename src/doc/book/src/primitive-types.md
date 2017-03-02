@@ -1,9 +1,6 @@
 # 基本类型
 
-The Rust language has a number of types that are considered ‘primitive’. This
-means that they’re built-in to the language. Rust is structured in such a way
-that the standard library also provides a number of useful types built on top
-of these ones, as well, but these are the most primitive.
+Rust语言中有一些类型被称作*基本类型*，它们内置于语言之中。Rust的标准库以这些基本类型为基础，提供了很多有用的类型。
 
 # 布尔类型
 
@@ -32,18 +29,15 @@ let x = 'x';
 let two_hearts = '💕';
 ```
 
-Unlike some other languages, this means that Rust’s `char` is not a single byte,
-but four.
+不同于其他语言，这意味着Rust的`char`类型不是一个字节，而是4个字节。
 
-You can find more documentation for `char`s [in the standard library
-documentation][char].
+你可以在[标准库的`char`文档][char]中找到更多信息。
 
 [char]: ../std/primitive.char.html
 
 # 数值类型
 
-Rust has a variety of numeric types in a few categories: signed and unsigned,
-fixed and variable, floating-point and integer.
+Rust的数值类型可以按照不同的标准划分为不同的类别：有符号和无符号、定长和变长、浮点数和整数。
 
 These types consist of two parts: the category, and the size. For example,
 `u16` is an unsigned type with sixteen bits of size. More bits lets you have

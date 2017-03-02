@@ -1,6 +1,6 @@
-# Rust documentations
+# Rust文档
 
-## Building
+## 构建
 
 To generate all the docs, follow the "Building Documentation" instructions in
 the README in the root of the repository. This will convert the distributed
@@ -15,7 +15,7 @@ rustdoc --output html-doc/ --output-format html ../src/libstd/path.rs
 
 (This, of course, requires a working build of the `rustdoc` tool.)
 
-## Additional notes
+## 补充信息
 
 To generate an HTML version of a doc from Markdown manually, you can do
 something like:

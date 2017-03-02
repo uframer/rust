@@ -1,22 +1,22 @@
-# The Rust Reference
+# Rust参考手册
 
-[Introduction](introduction.md)
+[介绍](introduction.md)
 
 - [Notation](notation.md)
-    - [Unicode productions](unicode-productions.md)
-    - [String table productions](string-table-productions.md)
+    - [Unicode产生式](unicode-productions.md)
+    - [字符串表产生式](string-table-productions.md)
 
-- [Lexical structure](lexical-structure.md)
-    - [Input format](input-format.md)
-    - [Identifiers](identifiers.md)
-    - [Comments](comments.md)
-    - [Whitespace](whitespace.md)
-    - [Tokens](tokens.md)
-    - [Paths](paths.md)
+- [词法结构](lexical-structure.md)
+    - [输入格式](input-format.md)
+    - [标识符](identifiers.md)
+    - [注释](comments.md)
+    - [空白](whitespace.md)
+    - [记号](tokens.md)
+    - [路径](paths.md)
 
-- [Macros](macros.md)
-    - [Macros By Example](macros-by-example.md)
-    - [Procedrual Macros](procedural-macros.md)
+- [宏](macros.md)
+    - [样板宏](macros-by-example.md)
+    - [过程宏](procedural-macros.md)
 
 - [Crates and source files](crates-and-source-files.md)
 

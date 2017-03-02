@@ -35,7 +35,7 @@ $ curl https://sh.rustup.rs -sSf | sh
 这行命令会下载一个脚本并开始安装。如果一切顺利，你应该会见到如下输出：
 
 ```text
-Rust is installed now. Great! 
+Rust is installed now. Great!
 ```
 
 Installing on Windows is nearly as easy: download and run
@@ -50,7 +50,7 @@ page of the Rust website.
 
 ## 卸载
 
-Uninstalling Rust is as easy as installing it:
+卸载操作和安装操作一样容易：
 
 ```bash
 $ rustup self uninstall
@@ -85,16 +85,16 @@ Linux-based systems, Rust will attempt to call `cc` for linking. On
 this depends on having [Microsoft Visual C++ Build Tools][msvbt]
 installed. These do not need to be in `%PATH%` as `rustc` will find
 them automatically. In general, if you have your linker in a
-non-traditional location you can call `rustc 
+non-traditional location you can call `rustc
 linker=/path/to/cc`, where `/path/to/cc` should point to your linker path.
 
 [msvbt]: http://landinghub.visualstudio.com/visual-cpp-build-tools
 
 If you are still stuck, there are a number of places where we can get
 help. The easiest is
-[the #rust-beginners IRC channel on irc.mozilla.org][irc-beginners] 
+[the #rust-beginners IRC channel on irc.mozilla.org][irc-beginners]
 and for general discussion
-[the #rust IRC channel on irc.mozilla.org][irc], which we 
+[the #rust IRC channel on irc.mozilla.org][irc], which we
 can access through [Mibbit][mibbit]. Then we'll be chatting with other
 Rustaceans (a silly nickname we call ourselves) who can help us out. Other great
 resources include [the user’s forum][users] and [Stack Overflow][stackoverflow].
@@ -179,7 +179,7 @@ system, you should see the string `Hello, world!` print to the terminal. If you
 did, then congratulations! You've officially written a Rust program. That makes
 you a Rust programmer! Welcome.
 
-## Anatomy of a Rust Program
+## Rust程序剖析
 
 Now, let’s go over what just happened in your "Hello, world!" program in
 detail. Here's the first piece of the puzzle:
@@ -236,7 +236,7 @@ ready to begin. Most lines of Rust code end with a `;`.
 
 [expression-oriented language]: glossary.html#expression-oriented-language
 
-## Compiling and Running Are Separate Steps
+## 编译和运行是两件事
 
 In "Writing and Running a Rust Program", we showed you how to run a newly
 created program. We'll break that process down and examine each step now.
@@ -319,7 +319,7 @@ Into a terminal. If you see a version number, great! If you see an error like
 ‘`command not found`’, then you should look at the documentation for the system
 in which you installed Rust, to determine if Cargo is separate.
 
-## Converting to Cargo
+## 转换为Cargo项目
 
 Let’s convert the Hello World program to Cargo. To Cargo-fy a project, you need
 to do three things:
@@ -331,7 +331,7 @@ to do three things:
 
 Let's get started!
 
-### Creating a Source Directory and Removing the Old Executable
+### 创建一个源码目录并移除旧的可执行文件
 
 First, go back to your terminal, move to your *hello_world* directory, and
 enter the following commands:
@@ -357,7 +357,7 @@ executable. If you wanted to make a library instead, you'd name the file
 `lib.rs`. This convention is used by Cargo to successfully compile your
 projects, but it can be overridden if you wish.
 
-### Creating a Configuration File
+### 创建一个配置文件
 
 Next, create a new file inside your *hello_world* directory, and call it
 `Cargo.toml`.
@@ -391,7 +391,7 @@ know to compile your program: its name, what version it is, and who wrote it.
 Once you've added this information to the *Cargo.toml* file, save it to finish
 creating the configuration file.
 
-## Building and Running a Cargo Project
+## 构建并运行一个Cargo项目
 
 With your *Cargo.toml* file in place in your project's root directory, you
 should be ready to build and run your Hello World program! To do so, enter the

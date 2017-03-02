@@ -1,7 +1,6 @@
-# Constructors
+# 构造
 
-There is exactly one way to create an instance of a user-defined type: name it,
-and initialize all its fields at once:
+只有一种方式来创建用户自定义类型的实例：写出类型的名字，然后一次性初始化它所有的字段：
 
 ```rust
 struct Foo {
