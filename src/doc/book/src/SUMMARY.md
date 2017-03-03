@@ -8,13 +8,13 @@
 * [语法和语义](syntax-and-semantics.md)✅
     * [变量绑定](variable-bindings.md)✅
     * [函数](functions.md)✅
-    * [基础类型](primitive-types.md)⏳
-    * [注释](comments.md)
-    * [`if`表达式](if.md)
-    * [循环](loops.md)
-    * [向量](vectors.md)
-    * [所有权](ownership.md)
-    * [引用和借用](references-and-borrowing.md)
+    * [基础类型](primitive-types.md)✅
+    * [注释](comments.md)✅
+    * [`if`表达式](if.md)✅
+    * [循环](loops.md)✅
+    * [向量](vectors.md)✅
+    * [所有权](ownership.md)✅
+    * [引用和借用](references-and-borrowing.md)⏳
     * [生命周期](lifetimes.md)
     * [可变性](mutability.md)
     * [结构体](structs.md)

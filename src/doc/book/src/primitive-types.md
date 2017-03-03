@@ -39,20 +39,15 @@ let two_hearts = '💕';
 
 Rust的数值类型可以按照不同的标准划分为不同的类别：有符号和无符号、定长和变长、浮点数和整数。
 
-These types consist of two parts: the category, and the size. For example,
-`u16` is an unsigned type with sixteen bits of size. More bits lets you have
-bigger numbers.
-
-If a number literal has nothing to cause its type to be inferred, it defaults:
+如果Rust无法推断出一个数值文字量的类型，那么它的默认类型为：
 
 ```rust
-let x = 42; // `x` has type `i32`.
+let x = 42; // `x`的类型是`i32`。
 
-let y = 1.0; // `y` has type `f64`.
+let y = 1.0; // `y`的类型是`f64`。
 ```
 
-Here’s a list of the different numeric types, with links to their documentation
-in the standard library:
+下面列出所有的数值类型，点击链接可以查看它们的标准库文档：
 
 * [i8](../std/primitive.i8.html)
 * [i16](../std/primitive.i16.html)
@@ -67,61 +62,43 @@ in the standard library:
 * [f32](../std/primitive.f32.html)
 * [f64](../std/primitive.f64.html)
 
-Let’s go over them by category:
+接下来我们按照不同的分类方式来介绍它们：
 
-## Signed and Unsigned
+## 有符号数和无符号数
 
-Integer types come in two varieties: signed and unsigned. To understand the
-difference, let’s consider a number with four bits of size. A signed, four-bit
-number would let you store numbers from `-8` to `+7`. Signed numbers use
-“two’s complement representation”. An unsigned four bit number, since it does
-not need to store negatives, can store values from `0` to `+15`.
+整数类型分为两种：有符号整数和无符号整数。无符号类型使用`u`做前缀，有符号类型使用`i`做前缀。
 
-Unsigned types use a `u` for their category, and signed types use `i`. The `i`
-is for ‘integer’. So `u8` is an eight-bit unsigned number, and `i8` is an
-eight-bit signed number.
+## 定长类型
 
-## Fixed-size types
+定长类型占据的位数是确定的，不随着系统平台变化。Rust支持的位数包括`8`、`16`、`32`和`64`。例如，`u32`是无符号的32位整数，`i64`是有符号的64位整数。
 
-Fixed-size types have a specific number of bits in their representation. Valid
-bit sizes are `8`, `16`, `32`, and `64`. So, `u32` is an unsigned, 32-bit integer,
-and `i64` is a signed, 64-bit integer.
+## 变长类型
 
-## Variable-size types
+Rust还提供了一些大小随着底层机器架构变化的类型。由于它们的大小足够表示底层机器架构上任意集合的大小，所以它们的名字里有‘size’字样。它们按照有没有符号分为两种：`isize`和`usize`。
 
-Rust also provides types whose particular size depends on the underlying machine
-architecture. Their range is sufficient to express the size of any collection, so
-these types have ‘size’ as the category. They come in signed and unsigned varieties
-which account for two types: `isize` and `usize`.
+## 浮点类型
 
-## Floating-point types
-
-Rust also has two floating point types: `f32` and `f64`. These correspond to
-IEEE-754 single and double precision numbers.
+Rust支持两种类型的浮点数：`f32`和`f64`。它们对应于IEEE-754的单精度浮点数和双精度浮点数。
 
 # 数组
 
-Like many programming languages, Rust has list types to represent a sequence of
-things. The most basic is the *array*, a fixed-size list of elements of the
-same type. By default, arrays are immutable.
+同很多语言一样，Rust有很多表示数据序列的列表类型，其中最基本的*数组*，数组长度固定，元素具有相同的类型。默认情况下，数组是不可变的。
 
 ```rust
 let a = [1, 2, 3]; // a: [i32; 3]
 let mut m = [1, 2, 3]; // m: [i32; 3]
 ```
 
-Arrays have type `[T; N]`. We’ll talk about this `T` notation [in the generics
-section][generics]. The `N` is a compile-time constant, for the length of the
-array.
+数组的类型是`[T; N]`。我们会在[泛型][generics]介绍`T`这种写法。`N`是一个编译时常量，表示数组的长度。
 
-There’s a shorthand for initializing each element of an array to the same
-value. In this example, each element of `a` will be initialized to `0`:
+如果想用同样的值初始化所有的数组元素，可以使用下面的写法：
 
 ```rust
+// 用0初始化所有20个元素
 let a = [0; 20]; // a: [i32; 20]
 ```
 
-You can get the number of elements in an array `a` with `a.len()`:
+可以通过`len()`方法获取数组的长度（元素个数），例如数组`a`的长度是`a.len()`：
 
 ```rust
 let a = [1, 2, 3];
@@ -129,7 +106,7 @@ let a = [1, 2, 3];
 println!("a has {} elements", a.len());
 ```
 
-You can access a particular element of an array with *subscript notation*:
+你可以使用*下标*访问数组中的元素：
 
 ```rust
 let names = ["Graydon", "Brian", "Niko"]; // names: [&str; 3]
@@ -137,92 +114,67 @@ let names = ["Graydon", "Brian", "Niko"]; // names: [&str; 3]
 println!("The second name is: {}", names[1]);
 ```
 
-Subscripts start at zero, like in most programming languages, so the first name
-is `names[0]` and the second name is `names[1]`. The above example prints
-`The second name is: Brian`. If you try to use a subscript that is not in the
-array, you will get an error: array access is bounds-checked at run-time. Such
-errant access is the source of many bugs in other systems programming
-languages.
+同大多数语言一样，数组的下标从0开始。上面的例子会打印出`The second name is: Brian`。如果你的小标超出了数组的范范围，就会在运行时触发便捷检查错误。数组越界是很多语言中的常见错误。
 
-You can find more documentation for `array`s [in the standard library
-documentation][array].
+数组的详细文档在标准库文档的[`array`][array]部分。
 
 [array]: ../std/primitive.array.html
 
 # 切片
 
-A ‘slice’ is a reference to (or “view” into) another data structure. They are
-useful for allowing safe, efficient access to a portion of an array without
-copying. For example, you might want to reference only one line of a file read
-into memory. By nature, a slice is not created directly, but from an existing
-variable binding. Slices have a defined length, and can be mutable or immutable.
+切片‘slice’是对另一个数据结构的引用（或者说是*视图*）。它可以高效地访问访问数组中的某一部分，无需引入拷贝动作。例如，对于已经读入内存中的文件，你可能只想引用其中的一行。由于切片这种引用的天然属性，你不能创建独立的切片，它必须从一个已有的变量绑定来创建。切片的长度是固定的，可以是不可变的也可以是可变的。
 
-Internally, slices are represented as a pointer to the beginning of the data
-and a length.
+在内部，切片由一个指向数据开始位置的指针和一个长度组成。
 
 ## 切片语法
 
-You can use a combo of `&` and `[]` to create a slice from various things. The
-`&` indicates that slices are similar to [references], which we will cover in
-detail later in this section. The `[]`s, with a range, let you define the
-length of the slice:
+你可以使用`&`和`[]`符号的组合从很多类型创建切片。`&`符号表示切片同[引用][references]有相似之处，我们后面会解释这一点。`[]`符号里是一个区间，你用它来定义切片的起止位置（从而间接定义了长度）：
 
 ```rust
 let a = [0, 1, 2, 3, 4];
-let complete = &a[..]; // A slice containing all of the elements in `a`.
-let middle = &a[1..4]; // A slice of `a`: only the elements `1`, `2`, and `3`.
+let complete = &a[..]; // 包含`a`全部元素的切片。
+let middle = &a[1..4]; // 一个`a`的切片：里面的元素包括`1`、`2`和`3`。
 ```
 
-Slices have type `&[T]`. We’ll talk about that `T` when we cover
-[generics][generics].
+切片的类型是`&[T]`。我们会在[泛型][generics]介绍`T`这种写法。
 
 [generics]: generics.html
 
-You can find more documentation for slices [in the standard library
-documentation][slice].
+切片的详细文档可以在[标准库的文档][slice]中找到。
 
 [slice]: ../std/primitive.slice.html
 
 # `str`
 
-Rust’s `str` type is the most primitive string type. As an [unsized type][dst],
-it’s not very useful by itself, but becomes useful when placed behind a
-reference, like `&str`. We'll elaborate further when we cover
-[Strings][strings] and [references].
+Rust的`str`类型是最基础的字符串类型。由于它是一种[未定大小类型][dst]（每条字符串的长度取决于它的内容，所以`str`类型本身没有固定的大小），所以并不是一种是否好用的类型，但是它的引用`&str`的用途有很多。我们会在讲到[Strings][strings]和[引用][references]时更详细的介绍它。
 
 [dst]: unsized-types.html
 [strings]: strings.html
 [references]: references-and-borrowing.html
 
-You can find more documentation for `str` [in the standard library
-documentation][str].
+切片的详细文档可以在标准库的文档的[`str`][str]部分找到。
 
 [str]: ../std/primitive.str.html
 
 # 元组
 
-A tuple is an ordered list of fixed size. Like this:
+元素是固定长度的有序列表。例如：
 
 ```rust
 let x = (1, "hello");
 ```
 
-The parentheses and commas form this two-length tuple. Here’s the same code, but
-with the type annotated:
+元组使用圆括号定义，其中的元素使用逗号分隔。如果我们标出上面元素的类型的话，会是这样：
 
 ```rust
 let x: (i32, &str) = (1, "hello");
 ```
 
-As you can see, the type of a tuple looks like the tuple, but with each
-position having a type name rather than the value. Careful readers will also
-note that tuples are heterogeneous: we have an `i32` and a `&str` in this tuple.
-In systems programming languages, strings are a bit more complex than in other
-languages. For now, read `&str` as a *string slice*, and we’ll learn more
-soon.
+细心地读者可能已经注意到，元组是异构的容器：`x`的成员是一个`i32`和一个`&str`。
 
-You can assign one tuple into another, if they have the same contained types
-and [arity]. Tuples have the same arity when they have the same length.
+在系统编程语言中，字符串的处理要比其他语言麻烦一些。从现在开始，请将`&str`读成*字符串切片*，我们很快就会讲到它。
+
+你可以用一个元组给另一个元组赋值。，前提是它们具有相同的[元素个数][arity]，并且它们的类型要相同，这意味着它们的对应元素的类型要相同。
 
 [arity]: glossary.html#arity
 
@@ -233,8 +185,7 @@ let y = (2, 3); // y: (i32, i32)
 x = y;
 ```
 
-You can access the fields in a tuple through a *destructuring let*. Here’s
-an example:
+你可以使用被称作*析构let*的语法来访问元素的成员。看一个例子：
 
 ```rust
 let (x, y, z) = (1, 2, 3);
@@ -242,28 +193,22 @@ let (x, y, z) = (1, 2, 3);
 println!("x is {}", x);
 ```
 
-Remember [before][let] when I said the left-hand side of a `let` statement was more
-powerful than assigning a binding? Here we are. We can put a pattern on
-the left-hand side of the `let`, and if it matches up to the right-hand side,
-we can assign multiple bindings at once. In this case, `let` “destructures”
-or “breaks up” the tuple, and assigns the bits to three bindings.
+还记得我们[之前][let]提到过`let`语句的左边是模式匹配的事情吗？现在我们就看到一种匹配的形式。如果左侧的列表能够同右侧的内容相匹配，我们就可以同时给多个变量赋值。在这个例子中，`let`将右侧的元组打散，然后将元组的元素分别绑定给左边的三个变量。
 
 [let]: variable-bindings.html
 
-This pattern is very powerful, and we’ll see it repeated more later.
+这个模式非常强大，我们后面会经常见到它。
 
-You can disambiguate a single-element tuple from a value in parentheses with a
-comma:
+如果你的元组中只有一个元素，那么请注意添加一个看起来多余的逗号，因为只有依靠它，编译器才不会把它同一个包在圆括号中的值相混淆：
 
 ```rust
-(0,); // A single-element tuple.
-(0); // A zero in parentheses.
+(0,); // 这是只有一个元素0的元组。
+(0);  // 这是包在圆括号里的一个0.
 ```
 
 ## 元组索引
 
-You can also access fields of a tuple with indexing syntax:
-
+你也可以通过索引语法访问元组的成员：
 
 ```rust
 let tuple = (1, 2, 3);
@@ -275,17 +220,15 @@ let z = tuple.2;
 println!("x is {}", x);
 ```
 
-Like array indexing, it starts at zero, but unlike array indexing, it uses a
-`.`, rather than `[]`s.
+同数组的索引一样，元组的索引也从0开始，不过不同于数组使用的方括号，元组的索引使用一个句号`.`来指定。
 
-You can find more documentation for tuples [in the standard library
-documentation][tuple].
+可以在[标准库文档的`tuple`部分][tuple]看到更为详细的介绍。
 
 [tuple]: ../std/primitive.tuple.html
 
 # 函数
 
-Functions also have a type! They look like this:
+函数也有类型！它们的类型看起来像这样：
 
 ```rust
 fn foo(x: i32) -> i32 { x }
@@ -293,5 +236,4 @@ fn foo(x: i32) -> i32 { x }
 let x: fn(i32) -> i32 = foo;
 ```
 
-In this case, `x` is a ‘function pointer’ to a function that takes an `i32` and
-returns an `i32`.
+在这个例子中，`x`是一个*函数指针*，它指向一个以`i32`做参数并返回`i32`的函数。

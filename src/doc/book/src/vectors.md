@@ -99,8 +99,7 @@ for i in v {
 }
 ```
 
-注意：在迭代过程获得向量的所有权之后，你就不能再使用它了。You can iterate the vector multiple times by taking a reference to the vector whilst iterating.
-For example, the following code does not compile.
+注意：如果你直接在迭代过程中使用变量，迭代过程就会获得向量的所有权，你就不能再使用这个向量了。这一点在我们了解了*所有权*的概念后会更为清晰。为了避免这种窘境，最好在迭代过程中使用向量的引用。下面的代码是编译不过去的：
 
 ```rust,ignore
 let v = vec![1, 2, 3, 4, 5];
@@ -114,7 +113,7 @@ for i in v {
 }
 ```
 
-Whereas the following works perfectly,
+作为对比，下面的代码就没有问题：
 
 ```rust
 let v = vec![1, 2, 3, 4, 5];
@@ -128,8 +127,7 @@ for i in &v {
 }
 ```
 
-Vectors have many more useful methods, which you can read about in [their
-API documentation][vec].
+向量有很多有用的方法，你可以阅读[向量的API文档][vec]了解具体用法。
 
 [vec]: ../std/vec/index.html
 [box]: ../std/boxed/index.html

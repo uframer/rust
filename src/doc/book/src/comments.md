@@ -7,19 +7,19 @@ Rust支持两种类型的注释：*单行注释*和*文档注释*。
 ```rust
 // 单行注释从‘//’开始，一直拓展到行尾。
 
-let x = 5; // This is also a line comment.
+let x = 5; // 这也是一个单行注释。
 
-// If you have a long explanation for something, you can put line comments next
-// to each other. Put a space between the // and your comment so that it’s
-// more readable.
+// 如果你要解释的事情很多，注释很长，那么可以连着写
+// 很多行单行注释。注意在`//`后面加一个空格，这样看
+// 起来更美观。
 ```
 
 文档注释用`///`开头，其中的内容支持Markdown语法：
 
 ```rust
-/// Adds one to the number given.
+/// 将传入的数字加一。
 ///
-/// # Examples
+/// # 例子
 ///
 /// ```
 /// let five = 5;
