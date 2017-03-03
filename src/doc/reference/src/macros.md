@@ -1,16 +1,13 @@
-# Macros
+# 宏
 
-A number of minor features of Rust are not central enough to have their own
-syntax, and yet are not implementable as functions. Instead, they are given
-names, and invoked through a consistent syntax: `some_extension!(...)`.
+Rust中有些特性没有重要到需要为它们设计语法，但是用函数又不能直接实现。我们给这些功能指定独立的名字`some_extension`，然后使用`some_extension!(...)`这样的语法调用它们。
 
-Users of `rustc` can define new macros in two ways:
+`rustc`的用户可以通过两种不同的方式定义宏：
 
-* [Macros] define new syntax in a higher-level,
-  declarative way.
-* [Procedural Macros] can be used to implement custom derive.
+* [样板宏][Macros] 通过一种高级的声明式语法定义新功能。
+* [过程宏][Procedural Macros] 用于实现自定义派生。
 
-And one unstable way: [compiler plugins].
+此外，unstable版本的Rust还支持[编译器插件][compiler plugins]。
 
 [Macros]: ../book/macros.html
 [Procedural Macros]: ../book/procedural-macros.html

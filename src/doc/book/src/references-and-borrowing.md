@@ -180,7 +180,11 @@ error: cannot borrow `x` as immutable because it is also borrowed as mutable
                    ^
 ```
 
-这个编译错误的原因是我们违反了前面提到的规则：我们有一个`&mut T`类型的可变引用指向`x`，所以我们就不能再创建任何`&T`类型的只读引用了。这两种情形只能存在一种。下面的note给出了如何处理问题的提示信息：
+这个编译错误的原因是我们违反了前面提到的规则：我们有一个`&mut T`类型的可变引用指向`x`，所以我们就不能再创建任何`&T`类型的只读引用了，这两种情形同时只能存在一种。
+
+> 🐷：这个例子里的问题可能不是特别明显，似乎`y`用完了再用`x`没什么不对，原因是最后访问`println!`对于x是否变了无所谓。其实这里的问题在于，中间通过`y`这个可变引用修改了它和`x`共享的一个值，而`x`对于这个改变是不知情的，假设后面使用`x`的代码假定`x`的值没有变，就会出问题；这里的`println!`无害，不代表这里出现别的代码就无害，Rust为了保险，就要避免这种情况。
+
+编译器的`note`给出了如何处理问题的提示：
 
 ```text
 note: previous borrow ends here
@@ -190,11 +194,7 @@ fn main() {
 ^
 ```
 
-换句话说，前面的可变借用一直延续到`main()`的结尾。What
-we want is for the mutable borrow by `y` to end so that the resource can be
-returned to the owner, `x`. `x` can then provide an immutable borrow to `println!`.
-In Rust, borrowing is tied to the scope that the borrow is valid for. And our
-scopes look like this:
+换句话说，前面的可变借用一直延续到`main()`的结尾。我们的意图是，在`y`改完它借用的值后就把所有权归还给`x`。在Rust中，借用的生命周期同它所在作用域绑定，我们用注释先标记出生命周期：
 
 ```rust,ignore
 fn main() {
@@ -209,34 +209,28 @@ fn main() {
 
 ```
 
-The scopes conflict: we can’t make an `&x` while `y` is in scope.
-
-So when we add the curly braces:
+为了避免这个冲突，我们加上大括号：
 
 ```rust
 let mut x = 5;
 
 {
-    let y = &mut x; // -+ &mut borrow starts here.
+    let y = &mut x; // -+ &mut从这里开始借用`x`
     *y += 1;        //  |
-}                   // -+ ... and ends here.
+}                   // -+ &mut对`x`的借用到此为止
 
-println!("{}", x);  // <- Try to borrow `x` here.
+println!("{}", x);  // <- 在这里试图借用`x`
 ```
 
-There’s no problem. Our mutable borrow goes out of scope before we create an
-immutable one. So scope is the key to seeing how long a borrow lasts for.
+这样就没有问题了。
 
-## Issues borrowing prevents
+## 借用能够避免什么问题？
 
-Why have these restrictive rules? Well, as we noted, these rules prevent data
-races. What kinds of issues do data races cause? Here are a few.
+Rust为什么要添加这些限制条件呢？前面我们说这些规则可以避免数据竞争，接下来我们看几个数据竞争的例子。
 
-### Iterator invalidation
+### 迭代器失效
 
-One example is ‘iterator invalidation’, which happens when you try to mutate a
-collection that you’re iterating over. Rust’s borrow checker prevents this from
-happening:
+第一个例子是*迭代器失效*，如果你在遍历的过程中修改了这个集合，就可能引起这个问题。Rust的借用检查器会从根源上避免这个问题：
 
 ```rust
 let mut v = vec![1, 2, 3];
