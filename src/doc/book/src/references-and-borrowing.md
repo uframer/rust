@@ -240,9 +240,7 @@ for i in &v {
 }
 ```
 
-This prints out one through three. As we iterate through the vector, we’re
-only given references to the elements. And `v` is itself borrowed as immutable,
-which means we can’t change it while we’re iterating:
+上面的代码会打印从1到3的数字。在迭代时，我们只会拿到元素的引用。其中，`v`本身会被作为不可变引用被借用，也就是说，在我们完成迭代过程之前不能改变它：
 
 ```rust,ignore
 let mut v = vec![1, 2, 3];
@@ -253,7 +251,7 @@ for i in &v {
 }
 ```
 
-Here’s the error:
+编译上面的代码会产生错误：
 
 ```text
 error: cannot borrow `v` as mutable because it is also borrowed as immutable
@@ -271,15 +269,13 @@ for i in &v {
 ^
 ```
 
-We can’t modify `v` because it’s borrowed by the loop.
+因为`v`被迭代过程借用，所以我们不能修改它。
 
-### Use after free
+### 使用已经释放的资源
 
-References must not live longer than the resource they refer to. Rust will
-check the scopes of your references to ensure that this is true.
+引用的生命周期不能超过它所引用的资源的生命周期。Rust通过检查引用的作用域来保证这一点。
 
-If Rust didn’t check this property, we could accidentally use a reference
-which was invalid. For example:
+如果Rust不检查这一点，我们就可能会使用已经无效的引用。例如：
 
 ```rust,ignore
 let y: &i32;
@@ -291,7 +287,7 @@ let y: &i32;
 println!("{}", y);
 ```
 
-We get this error:
+编译上面的代码会得到如下的错误：
 
 ```text
 error: `x` does not live long enough
@@ -312,24 +308,19 @@ statement 0 at 4:18
 }
 ```
 
-In other words, `y` is only valid for the scope where `x` exists. As soon as
-`x` goes away, it becomes invalid to refer to it. As such, the error says that
-the borrow ‘doesn’t live long enough’ because it’s not valid for the right
-amount of time.
+换句话说，`y`只有在`x`所在的作用域有效。一旦`x`脱离了作用域，就不能再引用它。正因如此，上面的错误信息说借用‘doesn’t live long enough’，因为它此时已经失效。
 
-The same problem occurs when the reference is declared _before_ the variable it
-refers to. This is because resources within the same scope are freed in the
-opposite order they were declared:
+如果引用声明在被引用的变量*之前*，也会发生同样的问题。这是因为资源是按照它们声明的相反顺序被释放。
 
 ```rust,ignore
 let y: &i32;
 let x = 5;
 y = &x;
-
+// 🐷：这里是否会释放`x`？
 println!("{}", y);
 ```
 
-We get this error:
+编译上面的代码会发生错误：
 
 ```text
 error: `x` does not live long enough
@@ -353,5 +344,6 @@ statement 1 at 3:14
 }
 ```
 
-In the above example, `y` is declared before `x`, meaning that `y` lives longer
-than `x`, which is not allowed.
+发生错误的原因是，`y`声明在`x`前，也就意味着`y`的生命周期要比`x`长，这是不允许的。
+
+> 🐷：这个例子看起来很难理解，因为这个约束似乎过于严苛了，没有什么必要。❓
