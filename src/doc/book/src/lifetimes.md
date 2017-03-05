@@ -1,9 +1,6 @@
 # 生命周期
 
-This is the last of three sections presenting Rust’s ownership system. This is one of
-Rust’s most distinct and compelling features, with which Rust developers should
-become quite acquainted. Ownership is how Rust achieves its largest goal,
-memory safety. There are a few distinct concepts, each with its own chapter:
+本文是介绍Rust所有权系统的三篇文章中的第一篇。所有权系统是Rust是最有特点和令人印象深刻的特性，每一个Rust开发者都应该熟悉这一系统。Rust依赖所有权系统来实现它最主要的目标——内存安全。所有权系统由几个概念构成，每个概念都会独立介绍：
 
 * [所有权][ownership]，核心概念
 * [借用][borrowing]，以及相关的*引用*概念
@@ -11,8 +8,8 @@ memory safety. There are a few distinct concepts, each with its own chapter:
 
 这三个部分相互关联，你需要按顺序阅读完才能理解所有权系统。
 
-[所有权]: ownership.html
-[借用]: references-and-borrowing.html
+[ownership]: ownership.html
+[borrowing]: references-and-borrowing.html
 
 # 导语
 
@@ -24,35 +21,28 @@ memory safety. There are a few distinct concepts, each with its own chapter:
 
 # 生命周期
 
-Lending out a reference to a resource that someone else owns can be
-complicated. For example, imagine this set of operations:
+把资源的引用借给别人可能会很麻烦（🐷：原文的表述很混乱，和下面的例子对不上）。例如，请考虑如下操作：
 
-1. I acquire a handle to some kind of resource.
-2. I lend you a reference to the resource.
-3. I decide I’m done with the resource, and deallocate it, while you still have
-  your reference.
-4. You decide to use the resource.
+1. 我获得了某个资源的句柄。
+2. 我借给你一份这个资源的引用。
+3. 我决定我不再需要这个资源，然后就释放了它，此时你仍然拿着你对它的引用。
+4. 你决定使用这个资源。
 
-Uh oh! Your reference is pointing to an invalid resource. This is called a
-dangling pointer or ‘use after free’, when the resource is memory. A small
-example of such a situation would be:
+注意，这个时候你的引用已经指向了一个无效的资源！如果这个资源是内存的话，那么通常称这种情况为*悬挂指针*或者*释放后引用*。我们看一小段代码：
 
 ```rust,compile_fail
-let r;              // Introduce reference: `r`.
+let r;              // 声明引用：`r`。
 {
-    let i = 1;      // Introduce scoped value: `i`.
-    r = &i;         // Store reference of `i` in `r`.
-}                   // `i` goes out of scope and is dropped.
+    let i = 1;      // 在新的作用域内声明变量：`i`。
+    r = &i;         // 令`r`成为指向`i`的引用。
+}                   // `i`脱离作用域并被释放。
 
-println!("{}", r);  // `r` still refers to `i`.
+println!("{}", r);  // `r`依然去引用`i`。
 ```
 
-To fix this, we have to make sure that step four never happens after step
-three. In the small example above the Rust compiler is able to report the issue
-as it can see the lifetimes of the various values in the function.
+为了解决这个问题，我们必须要确保第四步操作不会在第三步操作之后发生。对于上面那个小例子，Rust编译器能够通过检查各个变量的生命周期发现这个问题。
 
-When we have a function that takes arguments by reference the situation becomes
-more complex. Consider the following example:
+如果函数的参数是引用，那么情况就会更为复杂。请考虑如下的例子：
 
 ```rust,compile_fail,E0106
 fn skip_prefix(line: &str, prefix: &str) -> &str {
@@ -334,10 +324,10 @@ to it.
 ## Lifetime Elision
 
 Rust supports powerful local type inference in the bodies of functions, but it
-deliberately does not perform any reasoning about types for item signatures. 
-However, for ergonomic reasons, a very restricted secondary inference algorithm called 
-“lifetime elision” does apply when judging lifetimes. Lifetime elision is concerned solely with inferring 
-lifetime parameters using three easily memorizable and unambiguous rules. This means lifetime elision 
+deliberately does not perform any reasoning about types for item signatures.
+However, for ergonomic reasons, a very restricted secondary inference algorithm called
+“lifetime elision” does apply when judging lifetimes. Lifetime elision is concerned solely with inferring
+lifetime parameters using three easily memorizable and unambiguous rules. This means lifetime elision
 acts as a shorthand for writing an item signature, while not hiding
 away the actual types involved as full local inference would if applied to it.
 
