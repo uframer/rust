@@ -195,7 +195,7 @@ println!("{}", a);
 fn foo(v: Vec<i32>) -> Vec<i32> {
     // Do stuff with `v`.
 
-    // Hand back ownership.
+    // 交还所有权。
     v
 }
 ```
@@ -204,9 +204,9 @@ fn foo(v: Vec<i32>) -> Vec<i32> {
 
 ```rust
 fn foo(v1: Vec<i32>, v2: Vec<i32>) -> (Vec<i32>, Vec<i32>, i32) {
-    // Do stuff with `v1` and `v2`.
+    // 操作`v1`和`v2`。
 
-    // Hand back ownership, and the result of our function.
+    // 交还所有权和函数的返回值。
     (v1, v2, 42)
 }
 

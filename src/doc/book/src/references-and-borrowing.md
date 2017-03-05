@@ -59,7 +59,7 @@ let answer = foo(&v1, &v2);
 
 ```rust
 fn main() {
-    // 你看不懂`fold`是干什么的也没关系，这里的重点是借用了一个不可变的引用。
+    // 你看不懂`fold`是干什么的也没关系，这里的重点是参数`v`借用了一个不可变的引用。
     fn sum_vec(v: &Vec<i32>) -> i32 {
         return v.iter().fold(0, |a, &b| a + b);
     }
@@ -143,8 +143,8 @@ Rust中的借用需要遵守如下规则：
 
 1. 任何borrow引用的作用域都不能超过所有者的作用域；
 2. 以下两种情形不能共存：
-  2.1. 存在对资源的一个或多个引用（`&T`）
-  2.2. 有且只有一个可变引用（`&mut T`）
+    2.1. 存在对资源的一个或多个引用（`&T`）
+    2.2. 有且只有一个可变引用（`&mut T`）
 
 你可能已经注意到，这些规则十分类似于*数据竞争*的定义：
 
@@ -316,7 +316,7 @@ statement 0 at 4:18
 let y: &i32;
 let x = 5;
 y = &x;
-// 🐷：这里是否会释放`x`？
+
 println!("{}", y);
 ```
 
@@ -324,26 +324,17 @@ println!("{}", y);
 
 ```text
 error: `x` does not live long enough
-y = &x;
-     ^
-note: reference must be valid for the block suffix following statement 0 at
-2:16...
-    let y: &i32;
-    let x = 5;
-    y = &x;
-
-    println!("{}", y);
-}
-
-note: ...but borrowed value is only valid for the block suffix following
-statement 1 at 3:14
-    let x = 5;
-    y = &x;
-
-    println!("{}", y);
-}
+ --> src/main.rs:7:1
+  |
+4 |    y = &x;
+  |         - borrow occurs here
+...
+7 | }
+  | ^ `x` dropped here while still borrowed
+  |
+  = note: values in a scope are dropped in the opposite order they are created
 ```
 
 发生错误的原因是，`y`声明在`x`前，也就意味着`y`的生命周期要比`x`长，这是不允许的。
 
-> 🐷：这个例子看起来很难理解，因为这个约束似乎过于严苛了，没有什么必要。❓
+> 🐷：在这个例子中，并不能表现约束规则的有效性。因为`y`作为借用，并不会在退出作用域时销毁所引用的值，因此不存在`x`先释放，然后`y`重复释放资源的问题；而且，由于释放的代码是编译器加在退出当前作用域的时间点上，所以又不存在`x`先释放，然后用户代码继续访问`y`的可能。如果`y`在最后被返回，逃逸出当前作用域的话，这个规则的有效性才会体现出来。在这里，它只是演示了规则的存在性。

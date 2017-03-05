@@ -14,8 +14,8 @@
     * [循环](loops.md)✅
     * [向量](vectors.md)✅
     * [所有权](ownership.md)✅
-    * [引用和借用](references-and-borrowing.md)⏳
-    * [生命周期](lifetimes.md)
+    * [引用和借用](references-and-borrowing.md)✅
+    * [生命周期](lifetimes.md)⏳
     * [可变性](mutability.md)
     * [结构体](structs.md)
     * [枚举类型](enums.md)
@@ -25,7 +25,7 @@
     * [字符串](strings.md)
     * [泛型](generics.md)
     * [特征（trait）](traits.md)
-    * [析构（`Drop`）](drop.md)
+    * [析构（`Drop`）](drop.md)✅
     * [`if let`用法](if-let.md)
     * [特征对象（trait object）](trait-objects.md)
     * [闭包](closures.md)
