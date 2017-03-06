@@ -55,23 +55,15 @@ let lang = "en";
 
 let v;
 {
-    let p = format!("lang:{}=", lang);  // -+ `p` comes into scope.
+    let p = format!("lang:{}=", lang);  // -+ 声明`p`。
     v = skip_prefix(line, p.as_str());  //  |
-}                                       // -+ `p` goes out of scope.
+}                                       // -+ `p`脱离作用域。
 println!("{}", v);
 ```
 
-Here we have a function `skip_prefix` which takes two `&str` references
-as parameters and returns a single `&str` reference. We call it
-by passing in references to `line` and `p`: Two variables with different
-lifetimes. Now the safety of the `println!`-line depends on whether the
-reference returned by `skip_prefix` function references the still living
-`line` or the already dropped `p` string.
+`skip_prefix`这个函数接受两个`&str`类型的引用作为参数，并且返回一个`&str`类型的引用。调用它时，我们传进去的两个引用分别是`line`和`p`：*这两个变量的生命周期是不同的*。现在，`println!`调用的安全性就依赖于`skip_prefix`函数返回的引用会指向*依然活着*的`line`还是*已经被释放*的`p`。
 
-Because of the above ambiguity, Rust will refuse to compile the example
-code. To get it to compile we need to tell the compiler more about the
-lifetimes of the references. This can be done by making the lifetimes
-explicit in the function declaration:
+由于编译器无法自己作出判断，所以它会给出编译错误。我们需要为编译器提供关于这些引用的生命周期的信息。下面的例子中明确地在函数声明中标出了生命周期：
 
 ```rust
 fn skip_prefix<'a, 'b>(line: &'a str, prefix: &'b str) -> &'a str {
@@ -80,17 +72,11 @@ fn skip_prefix<'a, 'b>(line: &'a str, prefix: &'b str) -> &'a str {
 }
 ```
 
-Let's examine the changes without going too deep into the syntax for now -
-we'll get to that later. The first change was adding the `<'a, 'b>` after the
-method name. This introduces two lifetime parameters: `'a` and `'b`. Next, each
-reference in the function signature was associated with one of the lifetime
-parameters by adding the lifetime name after the `&`. This tells the compiler
-how the lifetimes between different references are related.
+我们先看看有什么变化，一会儿再去研究语法。第一个变化是方法名后面添加了`<'a, 'b>`，引入了两个*生命周期参数*：`'a`和`'b`。第二个变化是，函数签名中的每个引用都添加了生命周期参数作为标签，注意这些标签是加在`&`之后的。这些标签的作用是把生命周期参数和引用关联起来。
 
-As a result the compiler is now able to deduce that the return value of
-`skip_prefix` has the same lifetime as the `line` parameter, which makes the `v`
-reference safe to use even after the `p` goes out of scope in the original
-example.
+做出这些修改后，编译器就能够推导出`skip_prefix`的返回值和参数`line`具有相同的生命周期，因此即使`p`已经脱离作用域，只要`v`还有效，那么就可以安全地使用这个返回值。
+
+> 🐷：看到这里我有一个疑惑，这里的讨论只覆盖了返回值的生命周期同参数的生命周期相关联的情形，如果返回值的生命周期是独立的呢？例如在里面新分配了一个字符串并返回回来？
 
 In addition to the compiler being able to validate the usage of `skip_prefix`
 return value, it can also ensure that the implementation follows the contract
