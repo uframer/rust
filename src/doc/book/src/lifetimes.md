@@ -63,7 +63,19 @@ println!("{}", v);
 
 `skip_prefix`这个函数接受两个`&str`类型的引用作为参数，并且返回一个`&str`类型的引用。调用它时，我们传进去的两个引用分别是`line`和`p`：*这两个变量的生命周期是不同的*。现在，`println!`调用的安全性就依赖于`skip_prefix`函数返回的引用会指向*依然活着*的`line`还是*已经被释放*的`p`。
 
-由于编译器无法自己作出判断，所以它会给出编译错误。我们需要为编译器提供关于这些引用的生命周期的信息。下面的例子中明确地在函数声明中标出了生命周期：
+由于编译器无法自己作出判断，所以它会给出编译错误。🐷：编译错误如下：
+
+```text
+error[E0106]: missing lifetime specifier
+ --> src/main.rs:1:45
+  |
+1 | fn skip_prefix(line: &str, prefix: &str) -> &str {
+  |                                             ^ expected lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `line` or `prefix`
+```
+
+我们需要为编译器提供关于这些引用的生命周期的信息。下面的例子中明确地在函数声明中标出了生命周期：
 
 ```rust
 fn skip_prefix<'a, 'b>(line: &'a str, prefix: &'b str) -> &'a str {
@@ -76,28 +88,17 @@ fn skip_prefix<'a, 'b>(line: &'a str, prefix: &'b str) -> &'a str {
 
 做出这些修改后，编译器就能够推导出`skip_prefix`的返回值和参数`line`具有相同的生命周期，因此即使`p`已经脱离作用域，只要`v`还有效，那么就可以安全地使用这个返回值。
 
-> 🐷：看到这里我有一个疑惑，这里的讨论只覆盖了返回值的生命周期同参数的生命周期相关联的情形，如果返回值的生命周期是独立的呢？例如在里面新分配了一个字符串并返回回来？
+> 🐷：这里的讨论只覆盖了返回值的生命周期同参数的生命周期相关联的情形，如果返回值的生命周期是独立的呢？例如在里面新分配了一个字符串并返回回来？其实这个担心是多余的。由于函数的返回值类型是`&str`，是一个借用，那么它一定指向函数体作用域内能够访问的一个值。显然，这个值要么是两个参数之一，要么是内部分配的一个值。而按照Rust的定义，引用的作用域不能超出被引用值的作用域，而这个借用已经占用了返回值的位置，所以如果它引用的是一个内部分配的值的话，这个值是无法逃逸出函数体的作用域的，也就会造成返回值这个借用的生命周期比它引用的值还长，从而违反了上一节介绍的借用规则，所以这种情形是不可能存在的，返回值引用的一定是两个参数之一。
 
-In addition to the compiler being able to validate the usage of `skip_prefix`
-return value, it can also ensure that the implementation follows the contract
-established by the function declaration. This is useful especially when you are
-implementing traits that are introduced [later in the book][traits].
+编译器除了能够验证`skip_prefix`返回值的用法之外，还能确保这个函数的实现符合函数声明确立的契约（contract）。如果你需要实现一个[特征][traits]的话，就需要编译器帮你检查其中的每个方法实现是否符合特征定义的接口要求。
 
-**Note** It's important to understand that lifetime annotations are
-_descriptive_, not _prescriptive_. This means that how long a reference is valid
-is determined by the code, not by the annotations. The annotations, however,
-give information about lifetimes to the compiler that uses them to check the
-validity of references. The compiler can do so without annotations in simple
-cases, but needs the programmer's support in complex scenarios.
+**注意**：生命周期标记是*描述性**（descriptive）*的，不是*规定性**（prescriptive）*的。这意味着一个引用真正的生命周期有多长不是由这些标记定义的，而是依赖于具体的代码。不过，编译器使用这些标记来检查引用的有效性。在某些简单的场景下，编译器不用标记就可以自己推导出结论，但是如果场景比较复杂，就需要开发人员手动打上标记。
 
 [traits]: traits.html
 
 # 语法
 
-The `'a` reads ‘the lifetime a’. Technically, every reference has some lifetime
-associated with it, but the compiler lets you elide (i.e. omit, see
-["Lifetime Elision"][lifetime-elision] below) them in common cases. Before we
-get to that, though, let’s look at a short example with explicit lifetimes:
+`'a`表示‘生命周期a’。技术上，每个引用都有与其相关联的生命周期，但是在多数情形下编译器允许你省略它（参见后面的[省略生命周期][lifetime-elision]部分）。我们暂时不讨论那么深入，还是先看一个明确标注生命周期的小例子：
 
 [lifetime-elision]: #lifetime-elision
 
@@ -105,31 +106,25 @@ get to that, though, let’s look at a short example with explicit lifetimes:
 fn bar<'a>(...)
 ```
 
-We previously talked a little about [function syntax][functions], but we didn’t
-discuss the `<>`s after a function’s name. A function can have ‘generic
-parameters’ between the `<>`s, of which lifetimes are one kind. We’ll discuss
-other kinds of generics [later in the book][generics], but for now, let’s
-focus on the lifetimes aspect.
+我们前面介绍过一点儿[函数的语法][functions]，但是没有提过函数名后面的`<>`部分。`<>`里面包含的是函数的*泛型参数*，而生命周期就是其中一种。我们会在[泛型][generics]部分讨论其他种类的泛型参数，现在把重点放在生命周期上。
 
 [functions]: functions.html
 [generics]: generics.html
 
-We use `<>` to declare our lifetimes. This says that `bar` has one lifetime,
-`'a`. If we had two reference parameters with different lifetimes, it would
-look like this:
+我们使用`<>`声明生命周期。上面的例子里，`bar`声明了一个生命周期——`'a`。如果我们有两个生命周期不同的函数参数，那么我们应该声明两个生命周期：
 
 
 ```rust,ignore
 fn bar<'a, 'b>(...)
 ```
 
-Then in our parameter list, we use the lifetimes we’ve named:
+在参数列表中，我们需要标注前面声明的生命周期：
 
 ```rust,ignore
 ...(x: &'a i32)
 ```
 
-If we wanted a `&mut` reference, we’d do this:
+如果我们的引用是可变的，那么要这样写：
 
 ```rust,ignore
 ...(x: &'a mut i32)
@@ -140,10 +135,9 @@ the lifetime `'a` has snuck in between the `&` and the `mut i32`. We read `&mut
 i32` as ‘a mutable reference to an `i32`’ and `&'a mut i32` as ‘a mutable
 reference to an `i32` with the lifetime `'a`’.
 
-# In `struct`s
+# `struct`中的生命周期
 
-You’ll also need explicit lifetimes when working with [`struct`][structs]s that
-contain references:
+如果[`struct`][structs]中包含引用的话，那么也需要明确地标出生命周期：
 
 ```rust
 struct Foo<'a> {
@@ -160,7 +154,7 @@ fn main() {
 
 [structs]: structs.html
 
-As you can see, `struct`s can also have lifetimes. In a similar way to functions,
+类似于函数，`struct`也可以带有生命周期：
 
 ```rust
 struct Foo<'a> {
@@ -168,7 +162,7 @@ struct Foo<'a> {
 # }
 ```
 
-declares a lifetime, and
+声明并使用生命周期：
 
 ```rust
 # struct Foo<'a> {
@@ -176,10 +170,10 @@ x: &'a i32,
 # }
 ```
 
-uses it. So why do we need a lifetime here? We need to ensure that any reference
+So why do we need a lifetime here? We need to ensure that any reference
 to a `Foo` cannot outlive the reference to an `i32` it contains.
 
-## `impl` blocks
+## `impl`块
 
 Let’s implement a method on `Foo`:
 
@@ -287,7 +281,7 @@ name is the first step towards being able to talk about it.
 
 ## 'static
 
-The lifetime named ‘static’ is a special lifetime. It signals that something
+名为‘static’的生命周期是一个特殊的生命周期。It signals that something
 has the lifetime of the entire program. Most Rust programmers first come across
 `'static` when dealing with strings:
 
@@ -307,7 +301,7 @@ let x: &'static i32 = &FOO;
 This adds an `i32` to the data segment of the binary, and `x` is a reference
 to it.
 
-## Lifetime Elision
+## 省略生命周期
 
 Rust supports powerful local type inference in the bodies of functions, but it
 deliberately does not perform any reasoning about types for item signatures.
@@ -351,7 +345,7 @@ Here are the three rules:
 
 Otherwise, it is an error to elide an output lifetime.
 
-### Examples
+### 示例
 
 Here are some examples of functions with elided lifetimes.  We’ve paired each
 example of an elided lifetime with its expanded form.
