@@ -198,9 +198,9 @@ As you can see, we need to declare a lifetime for `Foo` in the `impl` line. We r
 `'a` twice, like on functions: `impl<'a>` defines a lifetime `'a`, and `Foo<'a>`
 uses it.
 
-## Multiple lifetimes
+## 标记多个生命周期
 
-If you have multiple references, you can use the same lifetime multiple times:
+如果你有多个引用，并且它们的生命周期相同，你可以用同一个生命周期标签标记它们：
 
 ```rust
 fn x_or_y<'a>(x: &'a str, y: &'a str) -> &'a str {
@@ -208,9 +208,7 @@ fn x_or_y<'a>(x: &'a str, y: &'a str) -> &'a str {
 # }
 ```
 
-This says that `x` and `y` both are alive for the same scope, and that the
-return value is also alive for that scope. If you wanted `x` and `y` to have
-different lifetimes, you can use multiple lifetime parameters:
+上面代码的意思是，`x`和`y`具有相同的生命周期，而且返回值和它们的生命周期也一样。如果`x`和`y`的生命周期不同，那么可以使用多个生命周期标记：
 
 ```rust
 fn x_or_y<'a, 'b>(x: &'a str, y: &'b str) -> &'a str {
@@ -218,21 +216,19 @@ fn x_or_y<'a, 'b>(x: &'a str, y: &'b str) -> &'a str {
 # }
 ```
 
-In this example, `x` and `y` have different valid scopes, but the return value
-has the same lifetime as `x`.
+在上面的例子中，`x`和`y`具有不同的生命周期，返回值的生命周期同`x`相同。
 
-## Thinking in scopes
+## 从作用域的角度理解生命周期
 
-A way to think about lifetimes is to visualize the scope that a reference is
-valid for. For example:
+如果我们将引用的有效作用域可视化，可能会帮助你理解生命周期的概念。例如：
 
 ```rust
 fn main() {
-    let y = &5;     // -+ `y` comes into scope.
+    let y = &5;     // -+ `y`进入作用域。
                     //  |
     // Stuff...     //  |
                     //  |
-}                   // -+ `y` goes out of scope.
+}                   // -+ `y`脱离作用域。
 ```
 
 Adding in our `Foo`:
@@ -243,16 +239,15 @@ struct Foo<'a> {
 }
 
 fn main() {
-    let y = &5;           // -+ `y` comes into scope.
-    let f = Foo { x: y }; // -+ `f` comes into scope.
+    let y = &5;           // -+ `y`进入作用域。
+    let f = Foo { x: y }; // -+ `f`进入作用域。
                           //  |
     // Stuff...           //  |
                           //  |
-}                         // -+ `f` and `y` go out of scope.
+}                         // -+ `f`和`y`脱离作用域。
 ```
 
-Our `f` lives within the scope of `y`, so everything works. What if it didn’t?
-This code won’t work:
+`f`和`y`同处一个作用域，所以一切OK。如果不是这样呢？下面的代码编译不过：
 
 ```rust,ignore
 struct Foo<'a> {
@@ -260,123 +255,98 @@ struct Foo<'a> {
 }
 
 fn main() {
-    let x;                    // -+ `x` comes into scope.
+    let x;                    // -+ `x`进入作用域。
                               //  |
     {                         //  |
-        let y = &5;           // ---+ `y` comes into scope.
-        let f = Foo { x: y }; // ---+ `f` comes into scope.
-        x = &f.x;             //  | | This causes an error.
-    }                         // ---+ `f` and y go out of scope.
+        let y = &5;           // ---+ `y`进入作用域。
+        let f = Foo { x: y }; // ---+ `f`进入作用域。
+        x = &f.x;             //  | | 这行代码会造成错误。
+    }                         // ---+ `f`和`y`脱离作用域。
                               //  |
     println!("{}", x);        //  |
-}                             // -+ `x` goes out of scope.
+}                             // -+ `x`脱离作用域。
 ```
 
-Whew! As you can see here, the scopes of `f` and `y` are smaller than the scope
-of `x`. But when we do `x = &f.x`, we make `x` a reference to something that’s
-about to go out of scope.
+上面的例子中，`f`和`y`的作用域小于`x`的作用域。但是当我们写下`x = &f.x`时，`x`就引用了一个将要脱离作用域的资源。
 
-Named lifetimes are a way of giving these scopes a name. Giving something a
-name is the first step towards being able to talk about it.
+生命周期标记给作用域起了一个名字。毕竟知道对方的名字才好打招呼嘛。
 
-## 'static
+## `'static`
 
-名为‘static’的生命周期是一个特殊的生命周期。It signals that something
-has the lifetime of the entire program. Most Rust programmers first come across
-`'static` when dealing with strings:
+名为‘static’的生命周期是一个特殊的生命周期，它表示这个资源的生命周期是整个程序的生命周期。大多数Rust开发者是在使用字符串时第一次遇到`'static`的：
 
 ```rust
 let x: &'static str = "Hello, world.";
 ```
 
-String literals have the type `&'static str` because the reference is always
-alive: they are baked into the data segment of the final binary. Another
-example are globals:
+字符串文字量的类型是`&'static str`，这个引用永远是可用的，因为这些文字量保存在二进制文件的数据段中。我们再看一个全局变量的例子：
 
 ```rust
 static FOO: i32 = 5;
 let x: &'static i32 = &FOO;
 ```
 
-This adds an `i32` to the data segment of the binary, and `x` is a reference
-to it.
+上面的代码会将一个`i32`类型的值添加到二进制文件的数据段中，然后令`x`引用它。
 
-## 省略生命周期
+## *lifetime elision* 推断
 
-Rust supports powerful local type inference in the bodies of functions, but it
-deliberately does not perform any reasoning about types for item signatures.
-However, for ergonomic reasons, a very restricted secondary inference algorithm called
-“lifetime elision” does apply when judging lifetimes. Lifetime elision is concerned solely with inferring
-lifetime parameters using three easily memorizable and unambiguous rules. This means lifetime elision
-acts as a shorthand for writing an item signature, while not hiding
-away the actual types involved as full local inference would if applied to it.
+Rust在函数体内支持本地类型推断，但是故意不去推断函数签名中的类型。不过，为了体恤开发者，Rust提供了一个名叫 *lifetime elision* 的生命周期推断算法。 *lifetime elision* 使用三条容易记忆并且清晰的规则来推断生命周期参数。
 
-When talking about lifetime elision, we use the terms *input lifetime* and
-*output lifetime*. An *input lifetime* is a lifetime associated with a parameter
-of a function, and an *output lifetime* is a lifetime associated with the return
-value of a function. For example, this function has an input lifetime:
+在讨论 *lifetime elision* 时，我们会用到两个术语： *输入生命周期* 和 *输出生命周期* 。所谓 *输入生命周期* 同函数参数相关联， *输出生命周期* 同函数的返回值相关联。例如，下面的函数标出了输入生命周期：
 
 ```rust,ignore
 fn foo<'a>(bar: &'a str)
 ```
 
-This one has an output lifetime:
+下面的函数标出了输出生命周期：
 
 ```rust,ignore
 fn foo<'a>() -> &'a str
 ```
 
-This one has a lifetime in both positions:
+下面的函数两者兼有：
 
 ```rust,ignore
 fn foo<'a>(bar: &'a str) -> &'a str
 ```
 
-Here are the three rules:
+生命周期推断的三条规则包括：
 
-* Each elided lifetime in a function’s arguments becomes a distinct lifetime
-  parameter.
+* 为每个没有明确标出生命周期的函数参数创建一个独立的生命周期参数。
+* 如果只有一个输入生命周期，无论开发者是否明确标出了它，都会用它作为函数返回值中所有未标明的引用的生命周期。
+* 如果有多个输入生命周期，但是其中一个是`&self`或者`&mut self`（类似于其他语言中的`this`指针或者`self`指针），那么会把`self`用作函数返回值中所有未标明的引用的生命周期。
 
-* If there is exactly one input lifetime, elided or not, that lifetime is
-  assigned to all elided lifetimes in the return values of that function.
-
-* If there are multiple input lifetimes, but one of them is `&self` or `&mut
-  self`, the lifetime of `self` is assigned to all elided output lifetimes.
-
-Otherwise, it is an error to elide an output lifetime.
+如果不能满足上面的规则，开发者就必须明确标出输出生命周期。
 
 ### 示例
 
-Here are some examples of functions with elided lifetimes.  We’ve paired each
-example of an elided lifetime with its expanded form.
+下面给出一些省略函数生命周期的例子。在每一组例子中，我们同时给出了省略标记写法和对应的全标记形式。
 
 ```rust,ignore
-fn print(s: &str); // elided
-fn print<'a>(s: &'a str); // expanded
+fn print(s: &str); // 省略生命周期
+fn print<'a>(s: &'a str); // 标记出所有生命周期
 
-fn debug(lvl: u32, s: &str); // elided
-fn debug<'a>(lvl: u32, s: &'a str); // expanded
+fn debug(lvl: u32, s: &str); // 省略生命周期
+fn debug<'a>(lvl: u32, s: &'a str); // 标记出所有生命周期
 ```
 
-In the preceding example, `lvl` doesn’t need a lifetime because it’s not a
-reference (`&`). Only things relating to references (such as a `struct`
-which contains a reference) need lifetimes.
+前面例子中的`lvl`不需要标记生命周期，因为它不是一个引用（`&`）。只有同引用相关的资源（例如，包含引用的`struct`）才需要标记生命周期。
 
 ```rust,ignore
-fn substr(s: &str, until: u32) -> &str; // elided
-fn substr<'a>(s: &'a str, until: u32) -> &'a str; // expanded
+fn substr(s: &str, until: u32) -> &str; // 省略生命周期
+fn substr<'a>(s: &'a str, until: u32) -> &'a str; // 标记出所有生命周期
 
-fn get_str() -> &str; // ILLEGAL, no inputs
+fn get_str() -> &str; // 非法！因为没有输入，返回值的引用没有可用的引用目标
 
-fn frob(s: &str, t: &str) -> &str; // ILLEGAL, two inputs
-fn frob<'a, 'b>(s: &'a str, t: &'b str) -> &str; // Expanded: Output lifetime is ambiguous
+fn frob(s: &str, t: &str) -> &str; // 非法！因为有两个输入，不知道输出应该引用哪一个输入
+fn frob<'a, 'b>(s: &'a str, t: &'b str) -> &str; // 标记出所有输入生命周期，没有标记出输出的生命周期，依然不能编译通过
 
-fn get_mut(&mut self) -> &mut T; // elided
-fn get_mut<'a>(&'a mut self) -> &'a mut T; // expanded
+fn get_mut(&mut self) -> &mut T; // 省略生命周期
+fn get_mut<'a>(&'a mut self) -> &'a mut T; // 标记出所有生命周期
 
-fn args<T: ToCStr>(&mut self, args: &[T]) -> &mut Command; // elided
-fn args<'a, 'b, T: ToCStr>(&'a mut self, args: &'b [T]) -> &'a mut Command; // expanded
+fn args<T: ToCStr>(&mut self, args: &[T]) -> &mut Command; // 省略生命周期
+fn args<'a, 'b, T: ToCStr>(&'a mut self, args: &'b [T]) -> &'a mut Command; // 标记出所有生命周期
 
-fn new(buf: &mut [u8]) -> BufWriter; // elided
-fn new<'a>(buf: &'a mut [u8]) -> BufWriter<'a>; // expanded
+fn new(buf: &mut [u8]) -> BufWriter; // 省略生命周期
+fn new<'a>(buf: &'a mut [u8]) -> BufWriter<'a>; // 标记出所有生命周期
 ```
