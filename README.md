@@ -37,7 +37,7 @@
     $ ./x.py build && sudo ./x.py dist --install
     ```
 
-    > ***注意：***可以修改配置文件调整安装目录。将`./src/bootstrap/config.toml.example`复制到`./config.toml`，然后修改`[install]`下的`prefix`选项指定安装前缀。配置文件里还有很多选项可以配置，请参考配置文件中内置的说明。
+    > ***注意：*** 可以修改配置文件调整安装目录。将`./src/bootstrap/config.toml.example`复制到`./config.toml`，然后修改`[install]`下的`prefix`选项指定安装前缀。配置文件里还有很多选项可以配置，请参考配置文件中内置的说明。
 
     `sudo ./x.py dist --install`运行完成后，会在`/usr/local/bin`里添加几个程序：
     * `rustc`：Rust编译器
@@ -107,34 +107,26 @@ python x.py build
 
 #### 如何指定一种ABI
 
-Each specific ABI can also be used from either environment (for example, using
-the GNU ABI in powershell) by using an explicit build triple. The available
-Windows build triples are:
-- GNU ABI (using GCC)
+只要指明编译三元组，是可以在一种ABI的运行环境中编译生成另一种ABI的目标文件的，例如，你可以在PowerShell中编译出GNU ABI的目标文件。可用的Windows编译三元组包括：
+- GNU ABI（使用GCC）
     - `i686-pc-windows-gnu`
     - `x86_64-pc-windows-gnu`
-- The MSVC ABI
+- MSVC ABI
     - `i686-pc-windows-msvc`
     - `x86_64-pc-windows-msvc`
 
-The build triple can be specified by either specifying `--build=ABI` when
-invoking `x.py` commands, or by copying the `config.toml` file (as described
-in Building From Source), and modifying the `build` option under the `[build]`
-section.
+可以用`x.py`的`--build=ABI`选项指定编译三元组，或者也可以如前面介绍过的那样修改`config.toml`文件中的`build`选项（在`[build]`部分）。
 
 ### `configure`和`make`
 
-While it's not the recommended build system, this project also provides a
-configure script and makefile (the latter of which just invokes `x.py`).
+尽管不推荐，我们还提供了configure脚本和makefile（其实它只是简单地调用`x.py`）。
 
 ```sh
 $ ./configure
 $ make && sudo make install
 ```
 
-When using the configure script, the generated config.mk` file may override the
-`config.toml` file. To go back to the `config.toml` file, delete the generated
-`config.mk` file.
+如果使用configure脚本，那么生成的config.mk文件会优先于`config.toml`文件。如果想回头使用`config.toml`文件，请删除生成的`config.mk`文件。
 
 ## 如何构建文档
 
@@ -171,7 +163,7 @@ $ ./x.py doc
 Rust社区主要集中在下面几个地方：
 
 * [Stack Overflow] - 直接针对语言用法的问题。
-* [users.rust-lang.org] - General discussion and broader questions.
+* [users.rust-lang.org] - 一般讨论和相关问题。
 * [/r/rust] - 新闻和综合讨论。
 
 [Stack Overflow]: http://stackoverflow.com/questions/tagged/rust
@@ -180,7 +172,7 @@ Rust社区主要集中在下面几个地方：
 
 ## 如何做出贡献
 
-To contribute to Rust, please see [CONTRIBUTING](CONTRIBUTING.md).
+如果想要为Rust贡献一份力量，请阅读[CONTRIBUTING](CONTRIBUTING.md)的介绍。
 
 Rust has an [IRC] culture and most real-time collaboration happens in a
 variety of channels on Mozilla's IRC network, irc.mozilla.org. The
