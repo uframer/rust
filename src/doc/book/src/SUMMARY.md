@@ -15,9 +15,9 @@
     * [向量](vectors.md)✅
     * [所有权](ownership.md)✅
     * [引用和借用](references-and-borrowing.md)✅
-    * [生命周期](lifetimes.md)⏳
-    * [可变性](mutability.md)
-    * [结构体](structs.md)
+    * [生命周期](lifetimes.md)✅
+    * [可变性](mutability.md)✅
+    * [结构体](structs.md)⏳
     * [枚举类型](enums.md)
     * [`match`表达式](match.md)
     * [模式](patterns.md)
