@@ -51,7 +51,7 @@ fn main() {
 
 ```rust,ignore
 struct Point {
-    mut x: i32, // This causes an error.
+    mut x: i32, // 这行会造成编译错误。
     y: i32,
 }
 ```
@@ -69,9 +69,9 @@ fn main() {
 
     point.x = 5;
 
-    let point = point; // `point` is now immutable.
+    let point = point; // `point`现在是不可变的。
 
-    point.y = 6; // This causes an error.
+    point.y = 6; // 这行会造成编译错误。
 }
 ```
 
@@ -103,11 +103,9 @@ fn main() {
 }
 ```
 
-Initialization of a data structure (struct, enum, union) can be simplified when
-fields of the data structure are initialized with variables of the same
-names as the fields.
+如果初始化所用参数的变量名同字段的名字是一样的话，可以简化数据结构初始化（`struct`、`enum`、`union`）的写法。注意下面例子中的`name`和`age`：
 
-```
+```rust
 #[derive(Debug)]
 struct Person<'a> {
     name: &'a str,
@@ -115,15 +113,17 @@ struct Person<'a> {
 }
 
 fn main() {
-    // Create struct with field init shorthand
+    // 使用简化写法初始化结构体
     let name = "Peter";
     let age = 27;
     let peter = Person { name, age };
 
-    // Debug-print struct
+    // 用Debug的功能打印这个结构体
     println!("{:?}", peter);
 }
 ```
+
+> 🐷：这个简化的写法现在需要`unstable`的编译器。
 
 # 更新语法
 
@@ -154,7 +154,7 @@ let point = Point3d { z: 1, x: 2, .. origin };
 
 # 元组结构体
 
-Rust的*元组结构体*就像是[元组][tuple]和`struct`的混合体。元组结构体有一个名字，但是它的字段没有名字。它们也用`struct`关键字声明，但是名字后面跟着的是一个元组：
+Rust的 *元组结构体* 就像是[元组][tuple]和`struct`的混合体。元组结构体有一个名字，但是它的字段没有名字。它们也用`struct`关键字声明，但是名字后面跟着的是一个元组：
 
 ```rust
 struct Color(i32, i32, i32);
@@ -177,13 +177,9 @@ let black_r = black.0;
 let Point(_, origin_y, origin_z) = origin;
 ```
 
-Patterns like `Point(_, origin_y, origin_z)` are also used in
-[match expressions][match].
+[match表达式][match]中也会用到形如`Point(_, origin_y, origin_z)`的模式。
 
-One case when a tuple struct is very useful is when it has only one element.
-We call this the ‘newtype’ pattern, because it allows you to create a new type
-that is distinct from its contained value and also expresses its own semantic
-meaning:
+一个能让元组结构体大展拳脚的场景是当它只含有一个元素的时候。我们把这种用法成为 *newtype* 模式，因为你可以在保持原有值的语义的情况下创建一个新的类型：
 
 ```rust
 struct Inches(i32);
@@ -194,9 +190,7 @@ let Inches(integer_length) = length;
 println!("length is {} inches", integer_length);
 ```
 
-As above, you can extract the inner integer type through a destructuring `let`.
-In this case, the `let Inches(integer_length)` assigns `10` to `integer_length`.
-We could have used dot notation to do the same thing:
+如同上面的例子，你可以通过所谓的 *析构* `let`来匹配得到真正的值：`let Inches(integer_length)`会把`10`赋值给`integer_length`。我们也可以用点语法获取数值：
 
 ```rust
 # struct Inches(i32);
@@ -204,8 +198,7 @@ We could have used dot notation to do the same thing:
 let integer_length = length.0;
 ```
 
-It's always possible to use a `struct` instead of a tuple struct, and can be
-clearer. We could write `Color` and `Point` like this instead:
+所有使用元组结构体的场景下，你都可以用`struct`替代元组结构体，而且也会更为清晰。我们的`Color`和`Point`可以写成这样：
 
 ```rust
 struct Color {
@@ -221,34 +214,25 @@ struct Point {
 }
 ```
 
-Good names are important, and while values in a tuple struct can be
-referenced with dot notation as well, a `struct` gives us actual names,
-rather than positions.
+给字段起一个好名字是很重要的事情，尽管元组结构体的成员可以通过点语法访问，却不可能像`struct`那样给每个字段一个清晰的名字。
 
 [match]: match.html
 
-# Unit-like structs
+# 单元结构体（unit-like `struct`）
 
-You can define a `struct` with no members at all:
+你可以定义一个没有任何成员的结构体`struct`：
 
 ```rust
-struct Electron {} // Use empty braces...
-struct Proton;     // ...or just a semicolon.
+struct Electron {} // 只有两个大括号...
+struct Proton;     // ...或者直接跟着一个分号。
 
-// Whether you declared the struct with braces or not, do the same when creating one.
+// 不论你声明结构体时用的是上面那种写法，创建它的实例的时候要使用同声明一样的解法。
 let x = Electron {};
 let y = Proton;
 ```
 
-Such a `struct` is called ‘unit-like’ because it resembles the empty
-tuple, `()`, sometimes called ‘unit’. Like a tuple struct, it defines a
-new type.
+之所以把这种`struct`称作 *单元结构体* ，是因为它同空元组`()`很像，而空元组有个别名就叫做 *单元* 。同元组结构体一样，它也定义了一种新的类型。
 
-This is rarely useful on its own (although sometimes it can serve as a
-marker type), but in combination with other features, it can become
-useful. For instance, a library may ask you to create a structure that
-implements a certain [trait][trait] to handle events. If you don’t have
-any data you need to store in the structure, you can create a
-unit-like `struct`.
+这个写法本身并没有太多用处（尽管有时候可以把它当做标记类型），通常需要和别的语言特性结合使用。例如，一个库可能要求你创建一个实现了特定[特征][trait]的结构体来处理事件（🐷：类似于别的语言中Callback Handler的概念）。如果你并不需要在结构体中保存任何数据的话，就可以使用单元结构体。
 
 [trait]: traits.html
