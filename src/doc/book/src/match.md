@@ -1,9 +1,6 @@
 # `match`匹配
 
-Often, a simple [`if`][if]/`else` isn’t enough, because you have more than two
-possible options. Also, conditions can get quite complex. Rust
-has a keyword, `match`, that allows you to replace complicated `if`/`else`
-groupings with something more powerful. Check it out:
+很多时候，你要处理的可能的选项很多，简单的[`if`][if]/`else`是不够用的。此外，有些条件表达式会非常复杂。为此，Rust提供了一个名叫`match`的关键字，它的功能更为强大，你可以用它来替换复杂的`if`/`else`条件语句组。先看个例子：
 
 ```rust
 let x = 5;
@@ -37,9 +34,9 @@ error: non-exhaustive patterns: `_` not covered
 ```
 
 Rust is telling us that we forgot some value. The compiler infers from `x` that it
-can have any 32bit integer value; for example -2,147,483,648 to 2,147,483,647. The `_` acts 
-as a 'catch-all', and will catch all possible values that *aren't* specified in 
-an arm of `match`. As you can see in the previous example, we provide `match` 
+can have any 32bit integer value; for example -2,147,483,648 to 2,147,483,647. The `_` acts
+as a 'catch-all', and will catch all possible values that *aren't* specified in
+an arm of `match`. As you can see in the previous example, we provide `match`
 arms for integers 1-5, if `x` is 6 or any other value, then it is caught by `_`.
 
 `match` is also an expression, which means we can use it on the right-hand
