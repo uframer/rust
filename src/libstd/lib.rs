@@ -25,9 +25,8 @@
 //!
 //! # 如何阅读本文档
 //!
-//! If you already know the name of what you are looking for, the fastest way to
-//! find it is to use the <a href="#" onclick="focusSearchBar();">search
-//! bar</a> at the top of the page.
+//! 如果你知道想要查找的名字，那么最快的方式是使用页面上的搜索栏
+//! <a href="#" onclick="focusSearchBar();">search bar</a>。
 //!
 //! Otherwise, you may want to jump to one of these useful sections:
 //!
@@ -134,8 +133,8 @@
 //! atomically-reference-counted box, [`Arc`], with a [`Mutex`] to get the same
 //! effect.
 //!
-//! The [`collections`] module defines maps, sets, linked lists and other
-//! typical collection types, including the common [`HashMap<K, V>`].
+//! [`collections`]模块定义了字典、集合、链表和其他典型的容器类型，包括常见的
+//! [`HashMap<K, V>`]。
 //!
 //! ## 平台相关抽象和I/O
 //!
@@ -145,9 +144,8 @@
 //! 常见的I/O类型，包括[files]、[TCP]、[UDP]，分别定义在[`io`]、[`fs`]和[`net`]模块
 //! 中。
 //!
-//! The [`thread`] module contains Rust's threading abstractions. [`sync`]
-//! contains further primitive shared memory types, including [`atomic`] and
-//! [`mpsc`], which contains the channel types for message passing.
+//! [`thread`]模块提供了Rust的线程抽象。[`sync`]模块提供了共享内存类型的原语，包括
+//! [`atomic`]和[`mpsc`]，后者进一步定义了消息传递所需的信道类型。
 //!
 //! [I/O]: io/index.html
 //! [`MIN`]: i32/constant.MIN.html

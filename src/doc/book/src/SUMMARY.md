@@ -17,10 +17,10 @@
     * [引用和借用](references-and-borrowing.md)✅
     * [生命周期](lifetimes.md)✅
     * [可变性](mutability.md)✅
-    * [结构体](structs.md)⏳
-    * [枚举类型](enums.md)
-    * [`match`表达式](match.md)
-    * [模式](patterns.md)
+    * [结构体](structs.md)✅
+    * [枚举类型](enums.md)⏳
+    * [`match`表达式](match.md)⏳
+    * [模式](patterns.md)⏳
     * [方法的语法](method-syntax.md)
     * [字符串](strings.md)
     * [泛型](generics.md)
@@ -50,7 +50,7 @@
     * [迭代器](iterators.md)
     * [并发](concurrency.md)
     * [错误处理](error-handling.md)
-    * [Choosing your Guarantees](choosing-your-guarantees.md)
+    * [选择保障级别](choosing-your-guarantees.md)
     * [FFI](ffi.md)
     * [`Borrow`和`AsRef`](borrow-and-asref.md)
     * [释放Channel](release-channels.md)

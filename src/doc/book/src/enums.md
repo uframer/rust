@@ -1,8 +1,6 @@
 # 枚举
 
-An `enum` in Rust is a type that represents data that is one of
-several possible variants. Each variant in the `enum` can optionally
-have data associated with it:
+Rust使用`enum`关键字定义枚举类型——一组 *变体* 的集合。`enum`中的每个变体都可以带有可选的数据：
 
 ```rust
 enum Message {
@@ -13,11 +11,7 @@ enum Message {
 }
 ```
 
-The syntax for defining variants resembles the syntaxes used to define structs:
-you can have variants with no data (like unit-like structs), variants with named
-data, and variants with unnamed data (like tuple structs). Unlike
-separate struct definitions, however, an `enum` is a single type. A
-value of the enum can match any of the variants. For this reason, an
+定义枚举变体的语法类似于定义结构体的语法：变体可以不带有任何数据（类似于 *单元结构体* ）；变体可以带有有名字的数据；变体可以带有没名字的数据（类似于 *元组结构体* ）。`enum`定义的是一个单独的类型，不是一组松散的结构体。一个枚举值可以匹配到任意一个变体。For this reason, an
 enum is sometimes called a ‘sum type’: the set of possible values of the
 enum is the sum of the sets of possible values for each variant.
 

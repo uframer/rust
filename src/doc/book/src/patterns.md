@@ -1,6 +1,6 @@
 # 模式
 
-Patterns are quite common in Rust. We use them in [variable
+Rust中到处都可以见到模式。We use them in [variable
 bindings][bindings], [match expressions][match], and other places, too. Let’s go
 on a whirlwind tour of all of the things patterns can do!
 
@@ -21,9 +21,9 @@ match x {
 }
 ```
 
-This prints `one`.
+上面的代码会打印出`one`。
 
-It's possible to create a binding for the value in the any case:
+用一条 *全匹配* 绑定来匹配所有值是合法的：
 
 ```rust
 let x = 1;
@@ -33,25 +33,24 @@ match x {
 }
 ```
 
-This prints:
+上面的代码会输出：
 
 ```text
 x: 1 y: 1
 ```
 
-Note it is an error to have both a catch-all `_` and a catch-all binding in the same match block:
+注意，不能同时使用`_`和一个全匹配绑定：
 
 ```rust
 let x = 1;
 
 match x {
     y => println!("x: {} y: {}", x, y),
-    _ => println!("anything"), // this causes an error as it is unreachable
+    _ => println!("anything"), // 错误！这行代码不可达
 }
 ```
 
-There’s one pitfall with patterns: like anything that introduces a new binding,
-they introduce shadowing. For example:
+模式有一个缺陷：如同任何可以引入绑定的语言结构一样，它可能会 *遮蔽* 同名变量：
 
 ```rust
 let x = 1;
@@ -64,18 +63,14 @@ match c {
 println!("x: {}", x)
 ```
 
-This prints:
+上面的代码会输出：
 
 ```text
 x: c c: c
 x: 1
 ```
 
-In other words, `x =>` matches the pattern and introduces a new binding named
-`x`. This new binding is in scope for the match arm and takes on the value of
-`c`. Notice that the value of `x` outside the scope of the match has no bearing
-on the value of `x` within it. Because we already have a binding named `x`, this
-new `x` shadows it.
+换句话说，`x =>`这个模式会同时引入一个名为`x`的新绑定。这个新绑定的作用域它右边的语句，并且它的值会是`c`。注意，match表达式之外定义的`x`不会影响match表达式里面的`x`。因为match表达式之内`x`遮蔽了前面的`x`。
 
 # Multiple patterns
 
@@ -397,10 +392,9 @@ not this:
 4 | (5 if y) => ...
 ```
 
-# Mix and Match
+# 混合使用各种匹配方式
 
-Whew! That’s a lot of different ways to match things, and they can all be
-mixed and matched, depending on what you’re doing:
+前面介绍了很多匹配的方式，而且它们可以混起来用！
 
 ```rust,ignore
 match x {
@@ -408,4 +402,4 @@ match x {
 }
 ```
 
-Patterns are very powerful. Make good use of them.
+模式非常强大，善用它们。

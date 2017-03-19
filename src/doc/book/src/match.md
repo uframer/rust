@@ -1,6 +1,6 @@
 # `match`匹配
 
-很多时候，你要处理的可能的选项很多，简单的[`if`][if]/`else`是不够用的。此外，有些条件表达式会非常复杂。为此，Rust提供了一个名叫`match`的关键字，它的功能更为强大，你可以用它来替换复杂的`if`/`else`条件语句组。先看个例子：
+很多时候，你可能要处理很多的分支，简单的[`if`][if]/`else`语句就不够用了。而且，判断条件也可能变得很复杂。Rust提供了一个名叫`match`的关键字，你可以用它来取代一连串的`if`/`else`判断。看一下代码：
 
 ```rust
 let x = 5;
@@ -17,26 +17,17 @@ match x {
 
 [if]: if.html
 
-`match` takes an expression and then branches based on its value. Each ‘arm’ of
-the branch is of the form `val => expression`. When the value matches, that arm’s
-expression will be evaluated. It’s called `match` because of the term ‘pattern
-matching’, which `match` is an implementation of. There’s a [separate section on
-patterns][patterns] that covers all the patterns that are possible here.
+`match`接受一个表达式，然后根据表达式的值跳转到对应的分支。每个分支的语法格式是`val => expression`。如果某个分支匹配成功，那么它右边的表达式会被求值。关键字的名字`match`来自于术语 *模式匹配（pattern matching）* ，`match`表达式是Rust中的一种模式匹配应用。我们会在[模式][patterns]一章中详细介绍所有可能的模式。
 
 [patterns]: patterns.html
 
-One of the many advantages of `match` is it enforces ‘exhaustiveness checking’.
-For example if we remove the last arm with the underscore `_`, the compiler will
-give us an error:
+`match`的优点之一是，它会检查是否覆盖了所有的情况。例如，如果我们移除上面例子中的最后一行的`_`，编译器会给出错误：
 
 ```text
 error: non-exhaustive patterns: `_` not covered
 ```
 
-Rust is telling us that we forgot some value. The compiler infers from `x` that it
-can have any 32bit integer value; for example -2,147,483,648 to 2,147,483,647. The `_` acts
-as a 'catch-all', and will catch all possible values that *aren't* specified in
-an arm of `match`. As you can see in the previous example, we provide `match`
+Rust告诉我们忘了匹配一些情况。编译器从`x`推断出它需要处理所有的32位整数值，从-2,147,483,648到2,147,483,647。`_`的作用是匹配任何值，用于捕捉其它所有匹配模式不能匹配的情况。As you can see in the previous example, we provide `match`
 arms for integers 1-5, if `x` is 6 or any other value, then it is caught by `_`.
 
 `match` is also an expression, which means we can use it on the right-hand
@@ -58,7 +49,7 @@ let number = match x {
 Sometimes it’s a nice way of converting something from one type to another; in
 this example the integers are converted to `String`.
 
-# Matching on enums
+# 匹配枚举值
 
 Another important use of the `match` keyword is to process the possible
 variants of an enum:

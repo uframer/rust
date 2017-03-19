@@ -20,7 +20,7 @@ is the first. After this:
 * [上手][gs] - Set up your computer for Rust development.
 * [教程：猜数字][gg] - Learn some Rust with a small project.
 * [语法和语义][ss] - Each bit of Rust, broken down into small chunks.
-* [Effective Rust][er] - Higher-level concepts for writing excellent Rust code.
+* [高效Rust][er] - 介绍编写优秀Rust代码的进阶概念。
 * [术语][gl] - A reference of terms used in the book.
 * [参考书目][bi] - Background on Rust's influences, papers about Rust.
 

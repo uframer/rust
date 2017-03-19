@@ -1,15 +1,10 @@
-# Choosing your Guarantees
+# 选择你的保障级别
 
-One important feature of Rust is that it lets us control the costs and guarantees
-of a program.
+Rust的一个重要特点是允许你在程序受到的保障程度和付出的代价之间灵活选择。
 
-There are various &ldquo;wrapper type&rdquo; abstractions in the Rust standard library which embody
-a multitude of tradeoffs between cost, ergonomics, and guarantees. Many let one choose between
-run time and compile time enforcement. This section will explain a few selected abstractions in
-detail.
+Rust标准库提供了很多 *封装类型* ，它们提供了在代价、便利性和保障程度之间不同级别的平衡。有很多妥协发生在编译时间和运行时间之间。本节会挑选几种抽象来介绍。
 
-Before proceeding, it is highly recommended that one reads about [ownership][ownership] and
-[borrowing][borrowing] in Rust.
+在开始之前，我们强力推荐你先阅读[所有权][ownership]和[借用][borrowing]的部分。
 
 [ownership]: ownership.html
 [borrowing]: references-and-borrowing.html
@@ -18,17 +13,15 @@ Before proceeding, it is highly recommended that one reads about [ownership][own
 
 ## `Box<T>`
 
-[`Box<T>`][box] is an &ldquo;owned&rdquo; pointer, or a &ldquo;box&rdquo;. While it can hand
-out references to the contained data, it is the only owner of the data. In particular, consider
-the following:
+[`Box<T>`][box]是一个持有所有权的指针，一个“箱子”。它是数据的唯一所有者，但是可以向外借出引用。请考虑下面的例子：
 
 ```rust
 let x = Box::new(1);
 let y = x;
-// `x` is no longer accessible here.
+// `x`已经不能再被访问。
 ```
 
-Here, the box was _moved_ into `y`. As `x` no longer owns it, the compiler will no longer allow the
+在这个例子中，这个Box被 *移动* 到`y`。As `x` no longer owns it, the compiler will no longer allow the
 programmer to use `x` after this. A box can similarly be moved _out_ of a function by returning it.
 
 When a box (that hasn't been moved) goes out of scope, destructors are run. These destructors take
